@@ -1,0 +1,19 @@
+syntax = "proto3";
+package proto;
+
+message PBool {
+    bool b = 1;
+}
+
+message PSingleString {
+    string Str = 1;
+}
+
+message PInt32 {
+    int32 i32 = 1;
+}
+
+message PInt64 {
+    int64 i64 = 1;
+}
+

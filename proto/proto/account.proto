@@ -1,0 +1,31 @@
+syntax = "proto3";
+package proto;
+
+import "proto/base.proto";
+
+message User {
+    int32 id = 1;
+    string name = 2; // 用户名/昵称
+    int32 gender = 3; // 性别: 0未设置,1男,2女
+    int32 school_id = 4; // 学校id
+    int32 class_id = 5; // 班级id
+    int32 area_id = 6; // 区域id
+    int32 identity_status = 7; // 区域id
+}
+
+message regData {
+    string phone = 1; // 手机号
+    string code = 2; // 验证码
+}
+
+service Account {
+    rpc Login (PSingleString) returns (User) {
+    }
+    rpc Reg (PSingleString) returns (User) {
+    }
+    rpc GetVerifyCode (PSingleString) returns (PBool) {
+    }
+    rpc GetUserInfo (PInt32) returns (User) {
+    }
+}
+
