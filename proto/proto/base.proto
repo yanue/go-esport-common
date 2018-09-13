@@ -9,6 +9,10 @@ message PSingleString {
     string Str = 1;
 }
 
+message PPhone {
+    string phone = 1;
+}
+
 message PInt32 {
     int32 i32 = 1;
 }

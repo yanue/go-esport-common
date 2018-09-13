@@ -29,7 +29,7 @@ func (m *PBool) Reset()         { *m = PBool{} }
 func (m *PBool) String() string { return proto.CompactTextString(m) }
 func (*PBool) ProtoMessage()    {}
 func (*PBool) Descriptor() ([]byte, []int) {
-	return fileDescriptor_base_4a44029a10b8a265, []int{0}
+	return fileDescriptor_base_0757809129c8ee57, []int{0}
 }
 func (m *PBool) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PBool.Unmarshal(m, b)
@@ -67,7 +67,7 @@ func (m *PSingleString) Reset()         { *m = PSingleString{} }
 func (m *PSingleString) String() string { return proto.CompactTextString(m) }
 func (*PSingleString) ProtoMessage()    {}
 func (*PSingleString) Descriptor() ([]byte, []int) {
-	return fileDescriptor_base_4a44029a10b8a265, []int{1}
+	return fileDescriptor_base_0757809129c8ee57, []int{1}
 }
 func (m *PSingleString) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PSingleString.Unmarshal(m, b)
@@ -94,6 +94,44 @@ func (m *PSingleString) GetStr() string {
 	return ""
 }
 
+type PPhone struct {
+	Phone                string   `protobuf:"bytes,1,opt,name=phone,proto3" json:"phone,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PPhone) Reset()         { *m = PPhone{} }
+func (m *PPhone) String() string { return proto.CompactTextString(m) }
+func (*PPhone) ProtoMessage()    {}
+func (*PPhone) Descriptor() ([]byte, []int) {
+	return fileDescriptor_base_0757809129c8ee57, []int{2}
+}
+func (m *PPhone) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PPhone.Unmarshal(m, b)
+}
+func (m *PPhone) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PPhone.Marshal(b, m, deterministic)
+}
+func (dst *PPhone) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PPhone.Merge(dst, src)
+}
+func (m *PPhone) XXX_Size() int {
+	return xxx_messageInfo_PPhone.Size(m)
+}
+func (m *PPhone) XXX_DiscardUnknown() {
+	xxx_messageInfo_PPhone.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PPhone proto.InternalMessageInfo
+
+func (m *PPhone) GetPhone() string {
+	if m != nil {
+		return m.Phone
+	}
+	return ""
+}
+
 type PInt32 struct {
 	I32                  int32    `protobuf:"varint,1,opt,name=i32,proto3" json:"i32,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -105,7 +143,7 @@ func (m *PInt32) Reset()         { *m = PInt32{} }
 func (m *PInt32) String() string { return proto.CompactTextString(m) }
 func (*PInt32) ProtoMessage()    {}
 func (*PInt32) Descriptor() ([]byte, []int) {
-	return fileDescriptor_base_4a44029a10b8a265, []int{2}
+	return fileDescriptor_base_0757809129c8ee57, []int{3}
 }
 func (m *PInt32) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PInt32.Unmarshal(m, b)
@@ -143,7 +181,7 @@ func (m *PInt64) Reset()         { *m = PInt64{} }
 func (m *PInt64) String() string { return proto.CompactTextString(m) }
 func (*PInt64) ProtoMessage()    {}
 func (*PInt64) Descriptor() ([]byte, []int) {
-	return fileDescriptor_base_4a44029a10b8a265, []int{3}
+	return fileDescriptor_base_0757809129c8ee57, []int{4}
 }
 func (m *PInt64) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PInt64.Unmarshal(m, b)
@@ -173,21 +211,23 @@ func (m *PInt64) GetI64() int64 {
 func init() {
 	proto.RegisterType((*PBool)(nil), "proto.PBool")
 	proto.RegisterType((*PSingleString)(nil), "proto.PSingleString")
+	proto.RegisterType((*PPhone)(nil), "proto.PPhone")
 	proto.RegisterType((*PInt32)(nil), "proto.PInt32")
 	proto.RegisterType((*PInt64)(nil), "proto.PInt64")
 }
 
-func init() { proto.RegisterFile("proto/base.proto", fileDescriptor_base_4a44029a10b8a265) }
+func init() { proto.RegisterFile("proto/base.proto", fileDescriptor_base_0757809129c8ee57) }
 
-var fileDescriptor_base_4a44029a10b8a265 = []byte{
-	// 134 bytes of a gzipped FileDescriptorProto
+var fileDescriptor_base_0757809129c8ee57 = []byte{
+	// 155 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x28, 0x28, 0xca, 0x2f,
 	0xc9, 0xd7, 0x4f, 0x4a, 0x2c, 0x4e, 0xd5, 0x03, 0x33, 0x85, 0x58, 0xc1, 0x94, 0x92, 0x28, 0x17,
 	0x6b, 0x80, 0x53, 0x7e, 0x7e, 0x8e, 0x10, 0x0f, 0x17, 0x63, 0x92, 0x04, 0xa3, 0x02, 0xa3, 0x06,
 	0x47, 0x10, 0x63, 0x92, 0x92, 0x22, 0x17, 0x6f, 0x40, 0x70, 0x66, 0x5e, 0x7a, 0x4e, 0x6a, 0x70,
 	0x49, 0x51, 0x66, 0x5e, 0xba, 0x90, 0x00, 0x17, 0x73, 0x70, 0x49, 0x11, 0x58, 0x01, 0x67, 0x10,
-	0x88, 0xa9, 0x24, 0xc5, 0xc5, 0x16, 0xe0, 0x99, 0x57, 0x62, 0x6c, 0x04, 0x92, 0xcb, 0x34, 0x36,
-	0x02, 0xcb, 0xb1, 0x06, 0x81, 0x98, 0x30, 0x39, 0x33, 0x13, 0xb0, 0x9c, 0x99, 0x09, 0x58, 0x8e,
-	0x39, 0x08, 0xc4, 0x4c, 0x62, 0x03, 0x5b, 0x6c, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0xde, 0x31,
-	0x87, 0xfd, 0x93, 0x00, 0x00, 0x00,
+	0x88, 0xa9, 0x24, 0xc7, 0xc5, 0x16, 0x10, 0x90, 0x91, 0x9f, 0x97, 0x2a, 0x24, 0xc2, 0xc5, 0x5a,
+	0x00, 0x62, 0x40, 0x65, 0x21, 0x1c, 0x25, 0x29, 0x2e, 0xb6, 0x00, 0xcf, 0xbc, 0x12, 0x63, 0x23,
+	0x90, 0xde, 0x4c, 0x63, 0x23, 0xb0, 0x2c, 0x6b, 0x10, 0x88, 0x09, 0x93, 0x33, 0x33, 0x01, 0xcb,
+	0x99, 0x99, 0x80, 0xe5, 0x98, 0x83, 0x40, 0xcc, 0x24, 0x36, 0xb0, 0xc3, 0x8c, 0x01, 0x01, 0x00,
+	0x00, 0xff, 0xff, 0x95, 0x19, 0xe5, 0x67, 0xb3, 0x00, 0x00, 0x00,
 }

@@ -18,8 +18,26 @@ message regData {
     string code = 2; // 验证码
 }
 
+// 登陆方式
+enum login_type {
+    ACCOUNT = 0; // 账号
+    PHONE = 1; // 手机号
+    WECHAT = 2; // 微信
+    QQ = 3; // qq
+}
+
+// 登陆所需结构
+message PLoginData {
+    string phone = 1; // 手机号
+    string verify_code = 2; // 验证码
+    string account = 3; // 账号
+    string password = 4; // 密码 todo 加密问题
+    login_type login_type = 5;
+}
+
 service Account {
-    rpc Login (PSingleString) returns (User) {
+    // 登陆(账号或手机号)
+    rpc Login (PLoginData) returns (User) {
     }
     rpc Reg (PSingleString) returns (User) {
     }

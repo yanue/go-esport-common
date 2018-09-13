@@ -11,24 +11,25 @@
 package common
 
 import (
-	"go.uber.org/zap"
-	"sync"
+	. "go.uber.org/zap"
 )
 
 const (
+	// 运行环境
 	EnvProduction = "prod"
 	EnvTest       = "test"
+
+	// 微服务名
+	ServiceNameAccount = "account" // 账号相关微服务名
+
+	MicroServicePrefix      = "go.micro.service." // 微服务前缀
+	MicroServiceNameAccount = MicroServicePrefix + ServiceNameAccount
 )
 
 var (
-	AppPath        = ""                  // 程序启动目录
-	LogPath        = "../logs"           // 默认的文本日志生成目录
-	LogLevel       = zap.DebugLevel      // 暴露日志等级给外部读取,注意必须是: zapcore.Level
-	ConfigEnv      = ""                  // 启动参数 EnvProduction|EnvTest
-	ElasticIndex   = ""                  // 用于创建Elasticsearch 索引名称
-	CurrentService = ""                  // 当前服务
-	CurrentIP      = ""                  // 当前服务IP地址
-	bootstrap      = make(chan struct{}) // 初始化阻塞Chan
-	bootstrapOnce  = sync.Once{}
-	bootstrapGroup = new(sync.WaitGroup) // 等待初始化的队列
+	LogPath   = "../logs"      // 默认的文本日志生成目录
+	LogLevel  = DebugLevel // 暴露日志等级给外部读取,注意必须是: zapcore.Level
+	ConfigEnv = ""             // 启动参数 EnvProduction|EnvTest
+
+	Logs *SugaredLogger
 )
