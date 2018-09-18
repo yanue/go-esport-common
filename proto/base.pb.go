@@ -18,8 +18,176 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
+// 通用操作结果返回
+type PbResult struct {
+	ErrorCode            int32    `protobuf:"varint,1,opt,name=errorCode,proto3" json:"errorCode,omitempty"`
+	ErrorMsg             string   `protobuf:"bytes,2,opt,name=errorMsg,proto3" json:"errorMsg,omitempty"`
+	ExtraInfo            string   `protobuf:"bytes,3,opt,name=extraInfo,proto3" json:"extraInfo,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PbResult) Reset()         { *m = PbResult{} }
+func (m *PbResult) String() string { return proto.CompactTextString(m) }
+func (*PbResult) ProtoMessage()    {}
+func (*PbResult) Descriptor() ([]byte, []int) {
+	return fileDescriptor_base_e96a3832ce284936, []int{0}
+}
+func (m *PbResult) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PbResult.Unmarshal(m, b)
+}
+func (m *PbResult) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PbResult.Marshal(b, m, deterministic)
+}
+func (dst *PbResult) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PbResult.Merge(dst, src)
+}
+func (m *PbResult) XXX_Size() int {
+	return xxx_messageInfo_PbResult.Size(m)
+}
+func (m *PbResult) XXX_DiscardUnknown() {
+	xxx_messageInfo_PbResult.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PbResult proto.InternalMessageInfo
+
+func (m *PbResult) GetErrorCode() int32 {
+	if m != nil {
+		return m.ErrorCode
+	}
+	return 0
+}
+
+func (m *PbResult) GetErrorMsg() string {
+	if m != nil {
+		return m.ErrorMsg
+	}
+	return ""
+}
+
+func (m *PbResult) GetExtraInfo() string {
+	if m != nil {
+		return m.ExtraInfo
+	}
+	return ""
+}
+
+// 通用操作结果返回
+type PJsonResult struct {
+	ErrorCode            int32    `protobuf:"varint,1,opt,name=errorCode,proto3" json:"errorCode,omitempty"`
+	ErrorMsg             string   `protobuf:"bytes,2,opt,name=errorMsg,proto3" json:"errorMsg,omitempty"`
+	ExtraInfo            string   `protobuf:"bytes,3,opt,name=extraInfo,proto3" json:"extraInfo,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PJsonResult) Reset()         { *m = PJsonResult{} }
+func (m *PJsonResult) String() string { return proto.CompactTextString(m) }
+func (*PJsonResult) ProtoMessage()    {}
+func (*PJsonResult) Descriptor() ([]byte, []int) {
+	return fileDescriptor_base_e96a3832ce284936, []int{1}
+}
+func (m *PJsonResult) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PJsonResult.Unmarshal(m, b)
+}
+func (m *PJsonResult) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PJsonResult.Marshal(b, m, deterministic)
+}
+func (dst *PJsonResult) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PJsonResult.Merge(dst, src)
+}
+func (m *PJsonResult) XXX_Size() int {
+	return xxx_messageInfo_PJsonResult.Size(m)
+}
+func (m *PJsonResult) XXX_DiscardUnknown() {
+	xxx_messageInfo_PJsonResult.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PJsonResult proto.InternalMessageInfo
+
+func (m *PJsonResult) GetErrorCode() int32 {
+	if m != nil {
+		return m.ErrorCode
+	}
+	return 0
+}
+
+func (m *PJsonResult) GetErrorMsg() string {
+	if m != nil {
+		return m.ErrorMsg
+	}
+	return ""
+}
+
+func (m *PJsonResult) GetExtraInfo() string {
+	if m != nil {
+		return m.ExtraInfo
+	}
+	return ""
+}
+
+//
+// @note 通信消息结构
+type PMessage struct {
+	Magic                int32    `protobuf:"varint,1,opt,name=magic,proto3" json:"magic,omitempty"`
+	Type                 string   `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
+	Data                 []byte   `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PMessage) Reset()         { *m = PMessage{} }
+func (m *PMessage) String() string { return proto.CompactTextString(m) }
+func (*PMessage) ProtoMessage()    {}
+func (*PMessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor_base_e96a3832ce284936, []int{2}
+}
+func (m *PMessage) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PMessage.Unmarshal(m, b)
+}
+func (m *PMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PMessage.Marshal(b, m, deterministic)
+}
+func (dst *PMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PMessage.Merge(dst, src)
+}
+func (m *PMessage) XXX_Size() int {
+	return xxx_messageInfo_PMessage.Size(m)
+}
+func (m *PMessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_PMessage.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PMessage proto.InternalMessageInfo
+
+func (m *PMessage) GetMagic() int32 {
+	if m != nil {
+		return m.Magic
+	}
+	return 0
+}
+
+func (m *PMessage) GetType() string {
+	if m != nil {
+		return m.Type
+	}
+	return ""
+}
+
+func (m *PMessage) GetData() []byte {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
+//
+// @note 单独传输bool
 type PBool struct {
-	B                    bool     `protobuf:"varint,1,opt,name=b,proto3" json:"b,omitempty"`
+	Val                  bool     `protobuf:"varint,1,opt,name=val,proto3" json:"val,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -29,7 +197,7 @@ func (m *PBool) Reset()         { *m = PBool{} }
 func (m *PBool) String() string { return proto.CompactTextString(m) }
 func (*PBool) ProtoMessage()    {}
 func (*PBool) Descriptor() ([]byte, []int) {
-	return fileDescriptor_base_0757809129c8ee57, []int{0}
+	return fileDescriptor_base_e96a3832ce284936, []int{3}
 }
 func (m *PBool) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PBool.Unmarshal(m, b)
@@ -49,89 +217,55 @@ func (m *PBool) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_PBool proto.InternalMessageInfo
 
-func (m *PBool) GetB() bool {
+func (m *PBool) GetVal() bool {
 	if m != nil {
-		return m.B
+		return m.Val
 	}
 	return false
 }
 
-type PSingleString struct {
-	Str                  string   `protobuf:"bytes,1,opt,name=Str,proto3" json:"Str,omitempty"`
+//
+// @note 单独传输string
+type PString struct {
+	Val                  string   `protobuf:"bytes,1,opt,name=val,proto3" json:"val,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *PSingleString) Reset()         { *m = PSingleString{} }
-func (m *PSingleString) String() string { return proto.CompactTextString(m) }
-func (*PSingleString) ProtoMessage()    {}
-func (*PSingleString) Descriptor() ([]byte, []int) {
-	return fileDescriptor_base_0757809129c8ee57, []int{1}
+func (m *PString) Reset()         { *m = PString{} }
+func (m *PString) String() string { return proto.CompactTextString(m) }
+func (*PString) ProtoMessage()    {}
+func (*PString) Descriptor() ([]byte, []int) {
+	return fileDescriptor_base_e96a3832ce284936, []int{4}
 }
-func (m *PSingleString) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_PSingleString.Unmarshal(m, b)
+func (m *PString) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PString.Unmarshal(m, b)
 }
-func (m *PSingleString) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_PSingleString.Marshal(b, m, deterministic)
+func (m *PString) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PString.Marshal(b, m, deterministic)
 }
-func (dst *PSingleString) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_PSingleString.Merge(dst, src)
+func (dst *PString) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PString.Merge(dst, src)
 }
-func (m *PSingleString) XXX_Size() int {
-	return xxx_messageInfo_PSingleString.Size(m)
+func (m *PString) XXX_Size() int {
+	return xxx_messageInfo_PString.Size(m)
 }
-func (m *PSingleString) XXX_DiscardUnknown() {
-	xxx_messageInfo_PSingleString.DiscardUnknown(m)
+func (m *PString) XXX_DiscardUnknown() {
+	xxx_messageInfo_PString.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_PSingleString proto.InternalMessageInfo
+var xxx_messageInfo_PString proto.InternalMessageInfo
 
-func (m *PSingleString) GetStr() string {
+func (m *PString) GetVal() string {
 	if m != nil {
-		return m.Str
+		return m.Val
 	}
 	return ""
 }
 
-type PPhone struct {
-	Phone                string   `protobuf:"bytes,1,opt,name=phone,proto3" json:"phone,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *PPhone) Reset()         { *m = PPhone{} }
-func (m *PPhone) String() string { return proto.CompactTextString(m) }
-func (*PPhone) ProtoMessage()    {}
-func (*PPhone) Descriptor() ([]byte, []int) {
-	return fileDescriptor_base_0757809129c8ee57, []int{2}
-}
-func (m *PPhone) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_PPhone.Unmarshal(m, b)
-}
-func (m *PPhone) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_PPhone.Marshal(b, m, deterministic)
-}
-func (dst *PPhone) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_PPhone.Merge(dst, src)
-}
-func (m *PPhone) XXX_Size() int {
-	return xxx_messageInfo_PPhone.Size(m)
-}
-func (m *PPhone) XXX_DiscardUnknown() {
-	xxx_messageInfo_PPhone.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_PPhone proto.InternalMessageInfo
-
-func (m *PPhone) GetPhone() string {
-	if m != nil {
-		return m.Phone
-	}
-	return ""
-}
-
+//
+// @note 单独传输int32
 type PInt32 struct {
 	I32                  int32    `protobuf:"varint,1,opt,name=i32,proto3" json:"i32,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -143,7 +277,7 @@ func (m *PInt32) Reset()         { *m = PInt32{} }
 func (m *PInt32) String() string { return proto.CompactTextString(m) }
 func (*PInt32) ProtoMessage()    {}
 func (*PInt32) Descriptor() ([]byte, []int) {
-	return fileDescriptor_base_0757809129c8ee57, []int{3}
+	return fileDescriptor_base_e96a3832ce284936, []int{5}
 }
 func (m *PInt32) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PInt32.Unmarshal(m, b)
@@ -170,6 +304,8 @@ func (m *PInt32) GetI32() int32 {
 	return 0
 }
 
+//
+// @note 单独传输int64
 type PInt64 struct {
 	I64                  int64    `protobuf:"varint,1,opt,name=i64,proto3" json:"i64,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -181,7 +317,7 @@ func (m *PInt64) Reset()         { *m = PInt64{} }
 func (m *PInt64) String() string { return proto.CompactTextString(m) }
 func (*PInt64) ProtoMessage()    {}
 func (*PInt64) Descriptor() ([]byte, []int) {
-	return fileDescriptor_base_0757809129c8ee57, []int{4}
+	return fileDescriptor_base_e96a3832ce284936, []int{6}
 }
 func (m *PInt64) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PInt64.Unmarshal(m, b)
@@ -208,26 +344,636 @@ func (m *PInt64) GetI64() int64 {
 	return 0
 }
 
-func init() {
-	proto.RegisterType((*PBool)(nil), "proto.PBool")
-	proto.RegisterType((*PSingleString)(nil), "proto.PSingleString")
-	proto.RegisterType((*PPhone)(nil), "proto.PPhone")
-	proto.RegisterType((*PInt32)(nil), "proto.PInt32")
-	proto.RegisterType((*PInt64)(nil), "proto.PInt64")
+//
+// @note 单独传输float64
+type PFloat64 struct {
+	Val                  float64  `protobuf:"fixed64,1,opt,name=Val,proto3" json:"Val,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
-func init() { proto.RegisterFile("proto/base.proto", fileDescriptor_base_0757809129c8ee57) }
+func (m *PFloat64) Reset()         { *m = PFloat64{} }
+func (m *PFloat64) String() string { return proto.CompactTextString(m) }
+func (*PFloat64) ProtoMessage()    {}
+func (*PFloat64) Descriptor() ([]byte, []int) {
+	return fileDescriptor_base_e96a3832ce284936, []int{7}
+}
+func (m *PFloat64) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PFloat64.Unmarshal(m, b)
+}
+func (m *PFloat64) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PFloat64.Marshal(b, m, deterministic)
+}
+func (dst *PFloat64) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PFloat64.Merge(dst, src)
+}
+func (m *PFloat64) XXX_Size() int {
+	return xxx_messageInfo_PFloat64.Size(m)
+}
+func (m *PFloat64) XXX_DiscardUnknown() {
+	xxx_messageInfo_PFloat64.DiscardUnknown(m)
+}
 
-var fileDescriptor_base_0757809129c8ee57 = []byte{
-	// 155 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x28, 0x28, 0xca, 0x2f,
-	0xc9, 0xd7, 0x4f, 0x4a, 0x2c, 0x4e, 0xd5, 0x03, 0x33, 0x85, 0x58, 0xc1, 0x94, 0x92, 0x28, 0x17,
-	0x6b, 0x80, 0x53, 0x7e, 0x7e, 0x8e, 0x10, 0x0f, 0x17, 0x63, 0x92, 0x04, 0xa3, 0x02, 0xa3, 0x06,
-	0x47, 0x10, 0x63, 0x92, 0x92, 0x22, 0x17, 0x6f, 0x40, 0x70, 0x66, 0x5e, 0x7a, 0x4e, 0x6a, 0x70,
-	0x49, 0x51, 0x66, 0x5e, 0xba, 0x90, 0x00, 0x17, 0x73, 0x70, 0x49, 0x11, 0x58, 0x01, 0x67, 0x10,
-	0x88, 0xa9, 0x24, 0xc7, 0xc5, 0x16, 0x10, 0x90, 0x91, 0x9f, 0x97, 0x2a, 0x24, 0xc2, 0xc5, 0x5a,
-	0x00, 0x62, 0x40, 0x65, 0x21, 0x1c, 0x25, 0x29, 0x2e, 0xb6, 0x00, 0xcf, 0xbc, 0x12, 0x63, 0x23,
-	0x90, 0xde, 0x4c, 0x63, 0x23, 0xb0, 0x2c, 0x6b, 0x10, 0x88, 0x09, 0x93, 0x33, 0x33, 0x01, 0xcb,
-	0x99, 0x99, 0x80, 0xe5, 0x98, 0x83, 0x40, 0xcc, 0x24, 0x36, 0xb0, 0xc3, 0x8c, 0x01, 0x01, 0x00,
-	0x00, 0xff, 0xff, 0x95, 0x19, 0xe5, 0x67, 0xb3, 0x00, 0x00, 0x00,
+var xxx_messageInfo_PFloat64 proto.InternalMessageInfo
+
+func (m *PFloat64) GetVal() float64 {
+	if m != nil {
+		return m.Val
+	}
+	return 0
+}
+
+//
+// @note 单独传输byte
+type PBytes struct {
+	Val                  []byte   `protobuf:"bytes,1,opt,name=Val,proto3" json:"Val,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PBytes) Reset()         { *m = PBytes{} }
+func (m *PBytes) String() string { return proto.CompactTextString(m) }
+func (*PBytes) ProtoMessage()    {}
+func (*PBytes) Descriptor() ([]byte, []int) {
+	return fileDescriptor_base_e96a3832ce284936, []int{8}
+}
+func (m *PBytes) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PBytes.Unmarshal(m, b)
+}
+func (m *PBytes) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PBytes.Marshal(b, m, deterministic)
+}
+func (dst *PBytes) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PBytes.Merge(dst, src)
+}
+func (m *PBytes) XXX_Size() int {
+	return xxx_messageInfo_PBytes.Size(m)
+}
+func (m *PBytes) XXX_DiscardUnknown() {
+	xxx_messageInfo_PBytes.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PBytes proto.InternalMessageInfo
+
+func (m *PBytes) GetVal() []byte {
+	if m != nil {
+		return m.Val
+	}
+	return nil
+}
+
+//
+// @note 批量传输uuid
+type PUids struct {
+	Uids                 []string `protobuf:"bytes,1,rep,name=uids,proto3" json:"uids,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PUids) Reset()         { *m = PUids{} }
+func (m *PUids) String() string { return proto.CompactTextString(m) }
+func (*PUids) ProtoMessage()    {}
+func (*PUids) Descriptor() ([]byte, []int) {
+	return fileDescriptor_base_e96a3832ce284936, []int{9}
+}
+func (m *PUids) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PUids.Unmarshal(m, b)
+}
+func (m *PUids) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PUids.Marshal(b, m, deterministic)
+}
+func (dst *PUids) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PUids.Merge(dst, src)
+}
+func (m *PUids) XXX_Size() int {
+	return xxx_messageInfo_PUids.Size(m)
+}
+func (m *PUids) XXX_DiscardUnknown() {
+	xxx_messageInfo_PUids.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PUids proto.InternalMessageInfo
+
+func (m *PUids) GetUids() []string {
+	if m != nil {
+		return m.Uids
+	}
+	return nil
+}
+
+//
+// @note 批量传输string
+type PStrList struct {
+	List                 []string `protobuf:"bytes,1,rep,name=List,proto3" json:"List,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PStrList) Reset()         { *m = PStrList{} }
+func (m *PStrList) String() string { return proto.CompactTextString(m) }
+func (*PStrList) ProtoMessage()    {}
+func (*PStrList) Descriptor() ([]byte, []int) {
+	return fileDescriptor_base_e96a3832ce284936, []int{10}
+}
+func (m *PStrList) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PStrList.Unmarshal(m, b)
+}
+func (m *PStrList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PStrList.Marshal(b, m, deterministic)
+}
+func (dst *PStrList) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PStrList.Merge(dst, src)
+}
+func (m *PStrList) XXX_Size() int {
+	return xxx_messageInfo_PStrList.Size(m)
+}
+func (m *PStrList) XXX_DiscardUnknown() {
+	xxx_messageInfo_PStrList.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PStrList proto.InternalMessageInfo
+
+func (m *PStrList) GetList() []string {
+	if m != nil {
+		return m.List
+	}
+	return nil
+}
+
+//
+// @note 批量传输int64
+type PInt64List struct {
+	List                 []int64  `protobuf:"varint,1,rep,packed,name=List,proto3" json:"List,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PInt64List) Reset()         { *m = PInt64List{} }
+func (m *PInt64List) String() string { return proto.CompactTextString(m) }
+func (*PInt64List) ProtoMessage()    {}
+func (*PInt64List) Descriptor() ([]byte, []int) {
+	return fileDescriptor_base_e96a3832ce284936, []int{11}
+}
+func (m *PInt64List) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PInt64List.Unmarshal(m, b)
+}
+func (m *PInt64List) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PInt64List.Marshal(b, m, deterministic)
+}
+func (dst *PInt64List) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PInt64List.Merge(dst, src)
+}
+func (m *PInt64List) XXX_Size() int {
+	return xxx_messageInfo_PInt64List.Size(m)
+}
+func (m *PInt64List) XXX_DiscardUnknown() {
+	xxx_messageInfo_PInt64List.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PInt64List proto.InternalMessageInfo
+
+func (m *PInt64List) GetList() []int64 {
+	if m != nil {
+		return m.List
+	}
+	return nil
+}
+
+//
+// @note 批量传输int32
+type PInt32List struct {
+	List                 []int32  `protobuf:"varint,1,rep,packed,name=List,proto3" json:"List,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PInt32List) Reset()         { *m = PInt32List{} }
+func (m *PInt32List) String() string { return proto.CompactTextString(m) }
+func (*PInt32List) ProtoMessage()    {}
+func (*PInt32List) Descriptor() ([]byte, []int) {
+	return fileDescriptor_base_e96a3832ce284936, []int{12}
+}
+func (m *PInt32List) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PInt32List.Unmarshal(m, b)
+}
+func (m *PInt32List) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PInt32List.Marshal(b, m, deterministic)
+}
+func (dst *PInt32List) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PInt32List.Merge(dst, src)
+}
+func (m *PInt32List) XXX_Size() int {
+	return xxx_messageInfo_PInt32List.Size(m)
+}
+func (m *PInt32List) XXX_DiscardUnknown() {
+	xxx_messageInfo_PInt32List.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PInt32List proto.InternalMessageInfo
+
+func (m *PInt32List) GetList() []int32 {
+	if m != nil {
+		return m.List
+	}
+	return nil
+}
+
+//
+// @note 批量传输uint32
+type PUInt32List struct {
+	List                 []uint32 `protobuf:"varint,1,rep,packed,name=List,proto3" json:"List,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PUInt32List) Reset()         { *m = PUInt32List{} }
+func (m *PUInt32List) String() string { return proto.CompactTextString(m) }
+func (*PUInt32List) ProtoMessage()    {}
+func (*PUInt32List) Descriptor() ([]byte, []int) {
+	return fileDescriptor_base_e96a3832ce284936, []int{13}
+}
+func (m *PUInt32List) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PUInt32List.Unmarshal(m, b)
+}
+func (m *PUInt32List) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PUInt32List.Marshal(b, m, deterministic)
+}
+func (dst *PUInt32List) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PUInt32List.Merge(dst, src)
+}
+func (m *PUInt32List) XXX_Size() int {
+	return xxx_messageInfo_PUInt32List.Size(m)
+}
+func (m *PUInt32List) XXX_DiscardUnknown() {
+	xxx_messageInfo_PUInt32List.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PUInt32List proto.InternalMessageInfo
+
+func (m *PUInt32List) GetList() []uint32 {
+	if m != nil {
+		return m.List
+	}
+	return nil
+}
+
+//
+// @note 批量传输bool
+type PBoolList struct {
+	List                 []bool   `protobuf:"varint,1,rep,packed,name=List,proto3" json:"List,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PBoolList) Reset()         { *m = PBoolList{} }
+func (m *PBoolList) String() string { return proto.CompactTextString(m) }
+func (*PBoolList) ProtoMessage()    {}
+func (*PBoolList) Descriptor() ([]byte, []int) {
+	return fileDescriptor_base_e96a3832ce284936, []int{14}
+}
+func (m *PBoolList) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PBoolList.Unmarshal(m, b)
+}
+func (m *PBoolList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PBoolList.Marshal(b, m, deterministic)
+}
+func (dst *PBoolList) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PBoolList.Merge(dst, src)
+}
+func (m *PBoolList) XXX_Size() int {
+	return xxx_messageInfo_PBoolList.Size(m)
+}
+func (m *PBoolList) XXX_DiscardUnknown() {
+	xxx_messageInfo_PBoolList.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PBoolList proto.InternalMessageInfo
+
+func (m *PBoolList) GetList() []bool {
+	if m != nil {
+		return m.List
+	}
+	return nil
+}
+
+//
+// @note 批量传输float64
+type PFloat64List struct {
+	List                 []float64 `protobuf:"fixed64,1,rep,packed,name=List,proto3" json:"List,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *PFloat64List) Reset()         { *m = PFloat64List{} }
+func (m *PFloat64List) String() string { return proto.CompactTextString(m) }
+func (*PFloat64List) ProtoMessage()    {}
+func (*PFloat64List) Descriptor() ([]byte, []int) {
+	return fileDescriptor_base_e96a3832ce284936, []int{15}
+}
+func (m *PFloat64List) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PFloat64List.Unmarshal(m, b)
+}
+func (m *PFloat64List) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PFloat64List.Marshal(b, m, deterministic)
+}
+func (dst *PFloat64List) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PFloat64List.Merge(dst, src)
+}
+func (m *PFloat64List) XXX_Size() int {
+	return xxx_messageInfo_PFloat64List.Size(m)
+}
+func (m *PFloat64List) XXX_DiscardUnknown() {
+	xxx_messageInfo_PFloat64List.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PFloat64List proto.InternalMessageInfo
+
+func (m *PFloat64List) GetList() []float64 {
+	if m != nil {
+		return m.List
+	}
+	return nil
+}
+
+//
+// @note 批量传输bytes
+type PBytesList struct {
+	Val                  [][]byte `protobuf:"bytes,1,rep,name=Val,proto3" json:"Val,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PBytesList) Reset()         { *m = PBytesList{} }
+func (m *PBytesList) String() string { return proto.CompactTextString(m) }
+func (*PBytesList) ProtoMessage()    {}
+func (*PBytesList) Descriptor() ([]byte, []int) {
+	return fileDescriptor_base_e96a3832ce284936, []int{16}
+}
+func (m *PBytesList) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PBytesList.Unmarshal(m, b)
+}
+func (m *PBytesList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PBytesList.Marshal(b, m, deterministic)
+}
+func (dst *PBytesList) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PBytesList.Merge(dst, src)
+}
+func (m *PBytesList) XXX_Size() int {
+	return xxx_messageInfo_PBytesList.Size(m)
+}
+func (m *PBytesList) XXX_DiscardUnknown() {
+	xxx_messageInfo_PBytesList.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PBytesList proto.InternalMessageInfo
+
+func (m *PBytesList) GetVal() [][]byte {
+	if m != nil {
+		return m.Val
+	}
+	return nil
+}
+
+//
+// @note kv结构
+type PKeyVal struct {
+	K                    string   `protobuf:"bytes,1,opt,name=K,proto3" json:"K,omitempty"`
+	V                    string   `protobuf:"bytes,2,opt,name=V,proto3" json:"V,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PKeyVal) Reset()         { *m = PKeyVal{} }
+func (m *PKeyVal) String() string { return proto.CompactTextString(m) }
+func (*PKeyVal) ProtoMessage()    {}
+func (*PKeyVal) Descriptor() ([]byte, []int) {
+	return fileDescriptor_base_e96a3832ce284936, []int{17}
+}
+func (m *PKeyVal) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PKeyVal.Unmarshal(m, b)
+}
+func (m *PKeyVal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PKeyVal.Marshal(b, m, deterministic)
+}
+func (dst *PKeyVal) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PKeyVal.Merge(dst, src)
+}
+func (m *PKeyVal) XXX_Size() int {
+	return xxx_messageInfo_PKeyVal.Size(m)
+}
+func (m *PKeyVal) XXX_DiscardUnknown() {
+	xxx_messageInfo_PKeyVal.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PKeyVal proto.InternalMessageInfo
+
+func (m *PKeyVal) GetK() string {
+	if m != nil {
+		return m.K
+	}
+	return ""
+}
+
+func (m *PKeyVal) GetV() string {
+	if m != nil {
+		return m.V
+	}
+	return ""
+}
+
+//
+// @note kv列表
+type PKeyValList struct {
+	List                 []*PKeyVal `protobuf:"bytes,1,rep,name=List,proto3" json:"List,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
+	XXX_unrecognized     []byte     `json:"-"`
+	XXX_sizecache        int32      `json:"-"`
+}
+
+func (m *PKeyValList) Reset()         { *m = PKeyValList{} }
+func (m *PKeyValList) String() string { return proto.CompactTextString(m) }
+func (*PKeyValList) ProtoMessage()    {}
+func (*PKeyValList) Descriptor() ([]byte, []int) {
+	return fileDescriptor_base_e96a3832ce284936, []int{18}
+}
+func (m *PKeyValList) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PKeyValList.Unmarshal(m, b)
+}
+func (m *PKeyValList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PKeyValList.Marshal(b, m, deterministic)
+}
+func (dst *PKeyValList) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PKeyValList.Merge(dst, src)
+}
+func (m *PKeyValList) XXX_Size() int {
+	return xxx_messageInfo_PKeyValList.Size(m)
+}
+func (m *PKeyValList) XXX_DiscardUnknown() {
+	xxx_messageInfo_PKeyValList.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PKeyValList proto.InternalMessageInfo
+
+func (m *PKeyValList) GetList() []*PKeyVal {
+	if m != nil {
+		return m.List
+	}
+	return nil
+}
+
+//
+// @note 带类型的二进制数据包，通过解析MsgType后再把MsgData反序列化为proto
+type PProtoBinary struct {
+	MsgType              int32    `protobuf:"varint,1,opt,name=MsgType,proto3" json:"MsgType,omitempty"`
+	MsgData              []byte   `protobuf:"bytes,2,opt,name=MsgData,proto3" json:"MsgData,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PProtoBinary) Reset()         { *m = PProtoBinary{} }
+func (m *PProtoBinary) String() string { return proto.CompactTextString(m) }
+func (*PProtoBinary) ProtoMessage()    {}
+func (*PProtoBinary) Descriptor() ([]byte, []int) {
+	return fileDescriptor_base_e96a3832ce284936, []int{19}
+}
+func (m *PProtoBinary) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PProtoBinary.Unmarshal(m, b)
+}
+func (m *PProtoBinary) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PProtoBinary.Marshal(b, m, deterministic)
+}
+func (dst *PProtoBinary) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PProtoBinary.Merge(dst, src)
+}
+func (m *PProtoBinary) XXX_Size() int {
+	return xxx_messageInfo_PProtoBinary.Size(m)
+}
+func (m *PProtoBinary) XXX_DiscardUnknown() {
+	xxx_messageInfo_PProtoBinary.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PProtoBinary proto.InternalMessageInfo
+
+func (m *PProtoBinary) GetMsgType() int32 {
+	if m != nil {
+		return m.MsgType
+	}
+	return 0
+}
+
+func (m *PProtoBinary) GetMsgData() []byte {
+	if m != nil {
+		return m.MsgData
+	}
+	return nil
+}
+
+//
+// @note PProtoBinaryList的列表
+type PProtoBinaryList struct {
+	List                 []*PProtoBinary `protobuf:"bytes,1,rep,name=List,proto3" json:"List,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
+	XXX_unrecognized     []byte          `json:"-"`
+	XXX_sizecache        int32           `json:"-"`
+}
+
+func (m *PProtoBinaryList) Reset()         { *m = PProtoBinaryList{} }
+func (m *PProtoBinaryList) String() string { return proto.CompactTextString(m) }
+func (*PProtoBinaryList) ProtoMessage()    {}
+func (*PProtoBinaryList) Descriptor() ([]byte, []int) {
+	return fileDescriptor_base_e96a3832ce284936, []int{20}
+}
+func (m *PProtoBinaryList) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PProtoBinaryList.Unmarshal(m, b)
+}
+func (m *PProtoBinaryList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PProtoBinaryList.Marshal(b, m, deterministic)
+}
+func (dst *PProtoBinaryList) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PProtoBinaryList.Merge(dst, src)
+}
+func (m *PProtoBinaryList) XXX_Size() int {
+	return xxx_messageInfo_PProtoBinaryList.Size(m)
+}
+func (m *PProtoBinaryList) XXX_DiscardUnknown() {
+	xxx_messageInfo_PProtoBinaryList.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PProtoBinaryList proto.InternalMessageInfo
+
+func (m *PProtoBinaryList) GetList() []*PProtoBinary {
+	if m != nil {
+		return m.List
+	}
+	return nil
+}
+
+func init() {
+	proto.RegisterType((*PbResult)(nil), "proto.PbResult")
+	proto.RegisterType((*PJsonResult)(nil), "proto.PJsonResult")
+	proto.RegisterType((*PMessage)(nil), "proto.PMessage")
+	proto.RegisterType((*PBool)(nil), "proto.PBool")
+	proto.RegisterType((*PString)(nil), "proto.PString")
+	proto.RegisterType((*PInt32)(nil), "proto.PInt32")
+	proto.RegisterType((*PInt64)(nil), "proto.PInt64")
+	proto.RegisterType((*PFloat64)(nil), "proto.PFloat64")
+	proto.RegisterType((*PBytes)(nil), "proto.PBytes")
+	proto.RegisterType((*PUids)(nil), "proto.PUids")
+	proto.RegisterType((*PStrList)(nil), "proto.PStrList")
+	proto.RegisterType((*PInt64List)(nil), "proto.PInt64List")
+	proto.RegisterType((*PInt32List)(nil), "proto.PInt32List")
+	proto.RegisterType((*PUInt32List)(nil), "proto.PUInt32List")
+	proto.RegisterType((*PBoolList)(nil), "proto.PBoolList")
+	proto.RegisterType((*PFloat64List)(nil), "proto.PFloat64List")
+	proto.RegisterType((*PBytesList)(nil), "proto.PBytesList")
+	proto.RegisterType((*PKeyVal)(nil), "proto.PKeyVal")
+	proto.RegisterType((*PKeyValList)(nil), "proto.PKeyValList")
+	proto.RegisterType((*PProtoBinary)(nil), "proto.PProtoBinary")
+	proto.RegisterType((*PProtoBinaryList)(nil), "proto.PProtoBinaryList")
+}
+
+func init() { proto.RegisterFile("proto/base.proto", fileDescriptor_base_e96a3832ce284936) }
+
+var fileDescriptor_base_e96a3832ce284936 = []byte{
+	// 440 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x93, 0xd1, 0x6f, 0xd3, 0x30,
+	0x10, 0xc6, 0xe5, 0x85, 0xac, 0xe9, 0x35, 0xa0, 0xca, 0xf0, 0x10, 0xb6, 0x69, 0x14, 0x4b, 0x88,
+	0x3d, 0x0d, 0xd1, 0x4e, 0x7b, 0xe1, 0xad, 0x20, 0xc4, 0x28, 0x95, 0xac, 0xc0, 0xfa, 0xee, 0x12,
+	0x13, 0x45, 0x0a, 0xf1, 0x14, 0x7b, 0x88, 0xfc, 0xf7, 0xe8, 0xce, 0xce, 0x96, 0x29, 0xbc, 0xee,
+	0x29, 0xdf, 0xdd, 0xf7, 0xcb, 0x9d, 0x7d, 0x97, 0xc0, 0xfc, 0xa6, 0x35, 0xce, 0xbc, 0xdb, 0x2b,
+	0xab, 0xcf, 0x49, 0xf2, 0x98, 0x1e, 0x62, 0x0f, 0x89, 0xdc, 0xe7, 0xda, 0xde, 0xd6, 0x8e, 0x9f,
+	0xc0, 0x54, 0xb7, 0xad, 0x69, 0x3f, 0x9a, 0x42, 0x67, 0x6c, 0xc1, 0xce, 0xe2, 0xfc, 0x3e, 0xc1,
+	0x8f, 0x20, 0xa1, 0x60, 0x6b, 0xcb, 0xec, 0x60, 0xc1, 0xce, 0xa6, 0xf9, 0x5d, 0x4c, 0x6f, 0xfe,
+	0x75, 0xad, 0xba, 0x6a, 0x7e, 0x99, 0x2c, 0x22, 0xf3, 0x3e, 0x21, 0x34, 0xcc, 0xe4, 0x57, 0x6b,
+	0x9a, 0x47, 0x6e, 0xf3, 0x05, 0x12, 0xb9, 0xd5, 0xd6, 0xaa, 0x52, 0xf3, 0x17, 0x10, 0xff, 0x56,
+	0x65, 0xf5, 0x33, 0xd4, 0xf7, 0x01, 0xe7, 0xf0, 0xc4, 0x75, 0x37, 0x3a, 0xd4, 0x25, 0x8d, 0xb9,
+	0x42, 0x39, 0x45, 0xe5, 0xd2, 0x9c, 0xb4, 0x78, 0x09, 0xb1, 0x5c, 0x1b, 0x53, 0xf3, 0x39, 0x44,
+	0x7f, 0x54, 0x4d, 0x45, 0x92, 0x1c, 0xa5, 0x38, 0x86, 0x89, 0xfc, 0xee, 0xda, 0xaa, 0x29, 0x87,
+	0xe6, 0xd4, 0x9b, 0x47, 0x70, 0x28, 0xaf, 0x1a, 0xb7, 0x5a, 0xa2, 0x57, 0xad, 0x96, 0xa1, 0x3b,
+	0xca, 0xde, 0xbb, 0xbc, 0x20, 0xef, 0xf2, 0x82, 0xbc, 0x28, 0x47, 0x29, 0x4e, 0x20, 0x91, 0x9f,
+	0x6b, 0xa3, 0x82, 0xbb, 0x0b, 0x55, 0x59, 0x8e, 0x92, 0xde, 0x5c, 0x77, 0x4e, 0xdb, 0xa1, 0x97,
+	0x7a, 0xef, 0x18, 0x62, 0x79, 0x5d, 0x15, 0x16, 0xaf, 0x71, 0x5b, 0x15, 0x36, 0x63, 0x8b, 0x08,
+	0xaf, 0x86, 0x5a, 0x9c, 0x42, 0x82, 0x67, 0xfd, 0x56, 0x59, 0x87, 0x3e, 0x3e, 0x7b, 0x1f, 0xb5,
+	0x58, 0x00, 0xf8, 0x23, 0x8d, 0x88, 0xe8, 0x21, 0xb1, 0x5a, 0x8e, 0x88, 0x38, 0x10, 0xaf, 0x61,
+	0x26, 0xaf, 0xff, 0x8f, 0x3c, 0x0d, 0xc8, 0x2b, 0x98, 0xd2, 0x34, 0x47, 0x40, 0x12, 0x00, 0x01,
+	0x69, 0x7f, 0xfd, 0x11, 0xc3, 0x02, 0x73, 0x0a, 0xe0, 0x87, 0x40, 0xc4, 0xdd, 0x20, 0xa2, 0x7e,
+	0x10, 0x6f, 0x60, 0x22, 0x37, 0xba, 0xdb, 0xa9, 0x9a, 0xa7, 0xc0, 0x36, 0x61, 0x2b, 0x6c, 0x83,
+	0xd1, 0x2e, 0x2c, 0x9c, 0xed, 0xc4, 0x7b, 0x98, 0x05, 0x8c, 0xea, 0x88, 0x41, 0xa7, 0xd9, 0xf2,
+	0x99, 0xff, 0x35, 0xce, 0x03, 0x11, 0x3a, 0xaf, 0x21, 0x95, 0x12, 0xf3, 0xeb, 0xaa, 0x51, 0x6d,
+	0xc7, 0x33, 0x98, 0x6c, 0x6d, 0xf9, 0x03, 0xbf, 0x23, 0xbf, 0xde, 0x3e, 0x0c, 0xce, 0x27, 0xfc,
+	0x9a, 0x0e, 0x68, 0x45, 0x7d, 0x28, 0x3e, 0xc0, 0x7c, 0x58, 0x83, 0x7a, 0xbf, 0x7d, 0xd0, 0xfb,
+	0x79, 0xdf, 0x7b, 0x80, 0xf9, 0x03, 0xec, 0x0f, 0xc9, 0x59, 0xfd, 0x0b, 0x00, 0x00, 0xff, 0xff,
+	0xc8, 0x2b, 0xd9, 0xa2, 0xc4, 0x03, 0x00, 0x00,
 }

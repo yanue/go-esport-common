@@ -1,23 +1,153 @@
 syntax = "proto3";
 package proto;
 
+// 通用操作结果返回
+message PbResult {
+    int32 errorCode = 1; //错误码：0为正确，其他均为出错
+    string errorMsg = 2; //错误描述信息
+    string extraInfo = 3; //额外信息
+}
+
+// 通用操作结果返回
+message PJsonResult {
+    int32 errorCode = 1; //错误码：0为正确，其他均为出错
+    string errorMsg = 2; //错误描述信息
+    string extraInfo = 3; //额外信息
+}
+
+/*
+ *@note 通信消息结构
+ */
+message PMessage {
+    int32 magic = 1; //固定为9833
+    string type = 2; //data消息结构名称，如"PResult"
+    bytes data = 3; //具体的message数据，请根据type解析
+}
+
+/*
+ *@note 单独传输bool
+ */
 message PBool {
-    bool b = 1;
+    bool val = 1;
 }
 
-message PSingleString {
-    string Str = 1;
+/*
+ *@note 单独传输string
+ */
+message PString {
+    string val = 1;
 }
 
-message PPhone {
-    string phone = 1;
-}
-
+/*
+ *@note 单独传输int32
+ */
 message PInt32 {
     int32 i32 = 1;
 }
 
+/*
+ *@note 单独传输int64
+ */
 message PInt64 {
     int64 i64 = 1;
 }
 
+/*
+ *@note 单独传输float64
+ */
+message PFloat64 {
+    double Val = 1;
+}
+
+/*
+ *@note 单独传输byte
+ */
+message PBytes {
+    bytes Val = 1;
+}
+
+/*
+ *@note 批量传输uuid
+ */
+message PUids {
+    repeated string uids = 1; //一串uuid
+}
+
+/*
+ *@note 批量传输string
+ */
+message PStrList {
+    repeated string List = 1;
+}
+
+/*
+ *@note 批量传输int64
+ */
+message PInt64List {
+    repeated int64 List = 1;
+}
+
+/*
+ *@note 批量传输int32
+ */
+message PInt32List {
+    repeated int32 List = 1;
+}
+
+/*
+ *@note 批量传输uint32
+ */
+message PUInt32List {
+    repeated uint32 List = 1;
+}
+
+/*
+ *@note 批量传输bool
+ */
+message PBoolList {
+    repeated bool List = 1;
+}
+
+/*
+ *@note 批量传输float64
+ */
+message PFloat64List {
+    repeated double List = 1;
+}
+
+/*
+ *@note 批量传输bytes
+ */
+message PBytesList {
+    repeated bytes Val = 1;
+}
+
+/*
+ *@note kv结构
+ */
+message PKeyVal {
+    string K = 1;
+    string V = 2;
+}
+
+/*
+ *@note kv列表
+ */
+message PKeyValList {
+    repeated PKeyVal List = 1;
+}
+
+/*
+ *@note 带类型的二进制数据包，通过解析MsgType后再把MsgData反序列化为proto
+ */
+message PProtoBinary {
+    int32 MsgType = 1;
+    bytes MsgData = 2; // proto二进制流
+}
+
+/*
+ *@note PProtoBinaryList的列表
+ */
+message PProtoBinaryList {
+    repeated PProtoBinary List = 1;
+}
