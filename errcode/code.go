@@ -10,23 +10,25 @@
 
 package errcode
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+	"os"
+)
 
 type ErrNo = int32
 
 const (
-	No_Error           ErrNo = 0
-	err_Offset_Common  ErrNo = 1001000
-	err_Offset_InValid ErrNo = 1101000
-	err_Offset_Account ErrNo = 1201000
-	err_Offset_Login   ErrNo = 1301000
+	No_Error         ErrNo = 0
+	errOffsetCommon  ErrNo = 1001000
+	errOffsetInvalid ErrNo = 1101000
+	errOffsetAccount ErrNo = 1201000
 )
 
 var errMsgAll = map[ErrNo]map[int32]string{
-	err_Offset_Common:  errMsgCommon,  // 公共错误码
-	err_Offset_InValid: errMsgInValid, // 无效相关的错误码
-	err_Offset_Account: errMsgAccount, // 账号相关错误码
-	err_Offset_Login:   errMsgLogin,   // 登陆相关
+	errOffsetCommon:  errMsgCommon,  // 公共错误码
+	errOffsetInvalid: errMsgInValid, // 无效相关的错误码
+	errOffsetAccount: errMsgAccount, // 账号相关错误码
 }
 
 func init() {
@@ -34,7 +36,17 @@ func init() {
 
 }
 
-func GetErrStr(code int32) string {
+/*
+*@note 根据错误码获取错误信息
+*@param code 错误码
+*@param extraMsg 额外自定义信息
+*@return 对应错误信息
+*/
+func GetErrMsg(code int32, extraMsg ... string) string {
+	if code == 0 {
+		return errMsgCommon[code]
+	}
+
 	var errMsg map[int32]string
 	// 查找对应区间
 	for errOffset, msgStep := range errMsgAll {
@@ -42,34 +54,59 @@ func GetErrStr(code int32) string {
 		if code%errOffset < 1000 {
 			// 找到了对应区间
 			errMsg = msgStep
-		}
-	}
-
-	reply, ok := errMsg[code]
-	if ok {
-		return reply
-	} else {
-		reply, _ := errMsg[Err_Com_Unknown]
-		return reply
-	}
-}
-
-func GetError(code int32) error {
-	var errMsg map[int32]string
-	// 查找对应区间
-	for errOffset, msgStep := range errMsgAll {
-		// offset 同一区间间隔最大1000
-		if code%errOffset < 1000 {
-			// 找到了对应区间
-			errMsg = msgStep
+			break
 		}
 	}
 
 	reply, ok := errMsg[code]
 	if !ok {
-		resp, _ := errMsg[Err_Com_Unknown]
+		resp, _ := errMsg[ErrCommonUnknownError]
 		reply = resp
 	}
 
-	return errors.New(reply)
+	if len(extraMsg[0]) > 0 {
+		if len(reply) > 0 {
+			reply = reply + "[" + extraMsg[0] + "]"
+		} else {
+			reply = extraMsg[0]
+		}
+	}
+
+	return reply
+}
+
+/*
+*@note 根据错误码获取错误
+*@param code 错误码
+*@param extraMsg 额外自定义信息
+*@return
+*/
+func GetError(code int32, extraMsg ... string) error {
+	return errors.New(GetErrMsg(code, extraMsg...))
+}
+
+/*
+*@note 转换错误码到json文件
+*@param code 错误码
+*@param extraMsg 额外自定义信息
+*@return
+*/
+func ConvertJsonFile(filename string) error {
+	file, err := os.OpenFile(filename, os.O_APPEND, 0777)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	file.WriteString("//自动生成，不要手动修改！\n")
+	file.WriteString("var Result = {\n")
+	for _, msgStep := range errMsgAll {
+		for code, msg := range msgStep {
+			fmt.Println("code, msg", fmt.Sprintf("\t%d: %q,\n", code, msg))
+			file.WriteString(fmt.Sprintf("\t%d: %q,\n", code, msg))
+		}
+	}
+	file.WriteString("};")
+
+	return nil
 }

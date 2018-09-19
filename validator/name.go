@@ -44,7 +44,7 @@ type cRegexpName struct {
 // 验证规则
 var (
 	singleWithSpace = regexp.MustCompile(` {2,}`)
-	regexpAccount   = regexp.MustCompile("^[a-z]{1}([a-z0-9]|_)*$")
+	regexpAccount   = regexp.MustCompile("^[a-z]{1}([a-z0-9]|_)+$")
 	regexpNickname  = regexp.MustCompile("[\u00A0\u1680\u180E\u2000-\u200B\u202F\u205F\u3000\uFEFF\n\b]")
 	regexpRealName  = regexp.MustCompile("^[\u4e00-\u9fff\uac00-\ud7af\u0041-\u005a\u0061-\u007a]+$")
 )
@@ -57,13 +57,13 @@ var (
 func (this *cRegexpName) IsAccount(account string) int32 {
 	str := strings.ToLower(account)
 
-	l := len(str)
-	if l < 6 || l > 12 {
-		return errcode.Err_Empty_Account
+	if !this.regexpAccount.MatchString(str) {
+		return errcode.ErrAccountFmtAccount
 	}
 
-	if !this.regexpAccount.MatchString(str) {
-		return errcode.Err_Login_Account_Fmt
+	l := len(str)
+	if l < LenMinAccount || l > LenMaxAccount {
+		return errcode.ErrAccountLenRealname
 	}
 
 	return errcode.No_Error
@@ -89,8 +89,9 @@ func (this *cRegexpName) IsNickname(nickname string) int32 {
 		}
 	}
 
-	if c < 3 || n > 24 {
-		return errcode.Err_Account_Nickname_Len
+	// 判断长度
+	if c < LenMinNickname || n > LenMaxNickname {
+		return errcode.ErrAccountLenNickname
 	}
 
 	// 去空验证
@@ -98,7 +99,7 @@ func (this *cRegexpName) IsNickname(nickname string) int32 {
 		return errcode.No_Error
 	}
 
-	return errcode.Err_Account_Nickname_Fmt
+	return errcode.ErrAccountFmtNickname
 }
 
 /*
@@ -109,8 +110,8 @@ func (this *cRegexpName) IsNickname(nickname string) int32 {
 func (this *cRegexpName) IsRealName(realName string) int32 {
 	strlen := len(realName)
 
-	if strlen < 2 || strlen > 24 {
-		return errcode.Err_Account_Realname_Len
+	if strlen < LenMinRealName || strlen > LenMaxRealName {
+		return errcode.ErrAccountLenRealname
 	}
 
 	// 去空验证
@@ -118,5 +119,5 @@ func (this *cRegexpName) IsRealName(realName string) int32 {
 		return errcode.No_Error
 	}
 
-	return errcode.Err_Account_Realname_Fmt
+	return errcode.ErrAccountFmtRealname
 }

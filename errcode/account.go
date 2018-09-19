@@ -12,132 +12,117 @@ package errcode
 
 var errMsgAccount = map[int32]string{
 	// account service
-	Err_Account_Old_Psw:                       "旧密码校验失败",
-	Err_Account_SetUserEx:                     "设置用户信息失败",
-	Err_Account_Binding_Get:                   "获取账户绑定信息失败",
-	Err_Account_Bind_Phone:                    "绑定手机账号失败",
-	Err_Account_Bind_WeChat:                   "绑定微信账号失败",
-	Err_Account_Bind_WeiBo:                    "绑定微博账号失败",
-	Err_Account_Bind_Facebook:                 "绑定脸书账号失败",
-	Err_Account_Bind_Google:                   "绑定谷歌账号失败",
-	Err_Account_GetLevel:                      "获取会员等级失败",
-	Err_Account_UserInfo_NotExist:             "用户信息不存在",
-	Err_Account_Blacklist_Add:                 "添加黑名单失败",
-	Err_Account_Blacklist_Update:              "更新黑名单失败",
-	Err_Account_Blacklist_Del:                 "删除黑名单失败",
-	Err_Account_Blacklist_Get:                 "获取黑名单失败",
-	Err_Account_Blacklist_Count:               "获取黑名单数量失败",
-	Err_Account_Nickname_Sensitive_Word:       "昵称包含敏感词",
-	Err_Account_Realname_Sensitive_Word:       "真实名称包含敏感词",
-	Err_Account_UserResume_Sensitive_Word:     "备注包含敏感词",
-	Err_Account_AuthToken:                     "验证令牌失败",
-	Err_Account_AuthPwd:                       "验证密码失败",
-	Err_Account_ReadNameAuthChecking:          "实名认证已在审核中",
-	Err_Account_ReadNameAuthOk:                "实名认证已认证",
-	Err_Account_CheckUrl:                      "超链接格式错误",
-	Err_Account_Username_Len:                  "仅支持6-12位字符",
-	Err_Account_Nickname_Len:                  "仅支持3-24位字符",
-	Err_Account_Realname_Len:                  "真名长度错误",
-	Err_Account_Username_Fmt:                  "仅支持数字、字母、下划线，且必须以字母开头",
-	Err_Account_Nickname_Fmt:                  "昵称中包含不被支持的字符",
-	Err_Account_Realname_Fmt:                  "真名格式错误",
-	Err_Account_UserResume_Fmt:                "个人简介错误",
-	Err_Account_IdCard_Fmt:                    "身份证格式错误",
-	Err_Account_Birthday_Fmt:                  "生日格式错误",
-	Err_Account_Above_Vip:                     "当前等级超过VIP等级",
-	Err_Account_AreaCode_Fmt:                  "区域代码格式错误",
-	Err_Account_Username_Sensitive_Word:       "BB号包含敏感词",
-	Err_Account_IdCardNo_Exist:                "提交身份证号码重复",
-	Err_Account_Email_Fmt:                     "邮箱账号格式错误",
-	Err_Account_Check_IdCard_Date:             "请校验身份证日期",
-	Err_Account_Vo_Member:                     "提升权限验证失败",
-	Err_Account_Position_Sensitive_Word:       "职位包含敏感词",
-	Err_Account_Level_Not_Vo:                  "请求用户非企业用户",
-	Err_Account_Level_Not_Vipp:                "请求用户非认证用户",
-	Err_Account_Change_Vipp_Level:             "当前等级不支持直接修改",
-	Err_Account_User_Disabled:                 "该用户已被封号",
-	Err_Account_Nickname_Conflict:             "该昵称已被占用",
-	Err_Account_Nickname_Change_Limited:       "昵称修改次数已达上限",
-	Err_Account_MedalName_Exists:              "勋章名称已存在",
-	Err_Account_MedalFormat:                   "勋章格式错误",
-	Err_Account_SystemMedal:                   "系统配置勋章不可删除",
-	Err_Account_MedalRelation:                 "未获得这个勋章，无法进行佩戴",
-	Err_Account_Medal_NotExists:               "勋章不存在",
-	Err_Account_Medal_Duplicated:              "勋章不可重复佩戴",
-	Err_Account_Certificate_NotExists:         "认证信息不存在",
-	Err_Account_Certificate_Duplicated:        "请不要重复认证",
-	Err_Account_AuthName_Sensitive_Word:       "认证信息包含敏感词",
-	Err_Account_AdditionalInfo_Sensitive_Word: "额外信息包含敏感词",
-	Err_Account_Job_Sensitive_Word:            "从事职业包含敏感词",
-	Err_Account_Introduce_Sensitive_Word:      "自我介绍包含敏感词",
-	Err_Account_Certificate_Type_Mismatch:     "认证条件不满足",
-	Err_Account_Modify_Certificate_Condition:  "个人认证属性，不支持修改",
-	Err_Account_Not_TeamMember:                "该帐号没有队员权限",
-	Err_Account_Change_Nick_Once_PerMonth:     "每个月最多可修改一次昵称",
+	ErrAccountNotExist:                   "账号不存在",
+	ErrAccountExist:                      "账号已存在",
+	ErrAccountDisabled:                   "该用户已被封号",
+	ErrAccountPass:                       "密码不正确",
+	ErrAccountSetUserProfile:             "设置用户信息失败",
+	ErrAccountSensitiveNick:              "昵称包含敏感词",
+	ErrAccountSensitiveRealname:          "真实名称包含敏感词",
+	ErrAccountSensitiveAccount:           "账号包含敏感词",
+	ErrAccountLenAccount:                 "仅支持6-15位字符",
+	ErrAccountLenNickname:                "仅支持3-24位字符",
+	ErrAccountLenRealname:                "真名长度错误",
+	ErrAccountLenPass:                    "密码长度错误",
+	ErrAccountFmtAccount:                 "仅支持数字、字母、下划线，且必须以字母开头",
+	ErrAccountFmtNickname:                "昵称中包含不被支持的字符",
+	ErrAccountFmtRealname:                "真名格式错误",
+	ErrAccountAuthtoken:                  "验证令牌失败",
+	ErrAccountAuthpwd:                    "验证密码失败",
+	ErrAccountNicknameConflict:           "该昵称已被占用",
+	ErrAccountNicknameChangeLimited:      "昵称修改次数已达上限",
+	ErrAccountNicknameChangeOncePermonth: "每个月最多可修改一次昵称",
+	ErrAccountVerificationChecking:       "实名认证审核中",
+	ErrAccountVerificationOk:             "实名认证已认证",
+	// login service
+	ErrAccountPhoneExist:          "手机账号已存在",
+	ErrAccountPhoneNotExist:       "手机账号不存在",
+	ErrAccountPhoneAreaNotSupport: "不可以用该区号的手机号码注册",
+	ErrAccountPhoneInBlacklist:    "该手机号码不能注册",
+	// 验证码
+	ErrVerifyCodeRegAlreadyExist:  "该手机号码已经注册过，请使用其他手机号码注册",
+	ErrVerifyCodeResetPwdNotExist: "没有查询到该手机号码的注册信息，请核对您绑定的手机号码",
+	ErrVerifyCodeBindAlreadyExist: "该手机号码已经注册过，请使用其他手机号码绑定",
+	ErrVerifyCodeCheck:            "短信验证码验证失败",
+	// 第三方登陆
+	ErrAccountLoginType:         "请选择登陆方式",
+	ErrAccountBindCancelOnlyOne: "您尚未绑定其它登录方式，无法取消当前绑定方式",
+	ErrAccountBindGet:           "获取账户绑定信息失败",
+	ErrAccountBindType:          "不支持该类型的绑定方式",
+	ErrAccountBindPhone:         "绑定手机账号失败",
+	ErrAccountBindWechat:        "绑定微信账号失败",
+	ErrAccountBindWeibo:         "绑定微博账号失败",
+	ErrAccountBindUid:           "该登录方式已绑定其他账号，无法再绑定",
+	ErrAccountBindExist:         "用户已绑定该登录方式",
+	ErrAccountBindNotExist:      "用户没有绑定该登录方式",
+	ErrAccountVerifyWechat:      "微信验证失败",
+	ErrAccountVerifyWeibo:       "微博验证失败",
+	ErrAccountVerifyFacebook:    "脸书验证失败",
+	ErrAccountVerifyGoogle:      "谷歌验证失败",
+	ErrAccountTokenUpdate:       "登录信息授权失败，您需要重新登录",
+	ErrAccountTokenFormat:       "登录信息格式错误，您需要重新登录",
+	ErrAccountTokenUserid:       "登录信息与用户信息不匹配，您需要重新登录",
+	ErrAccountTokenExpire:       "登录信息已过期，您需要重新获取授权",
+	ErrAccountTokenRefresh:      "登录信息已过期，您需要重新登录", // 第三方登陆
+	ErrAccountTokenNotEqual:     "您的账号已在其它设备上登录，请重新登录",
+	ErrAccountTokenVerify:       "登录信息已过期，您需要重新登录",
 }
 
 // account service err code
 const (
-	Err_Account_Old_Psw = err_Offset_Account + iota
-	Err_Account_SetUserEx
-	Err_Account_Binding_Get
-	Err_Account_Bind_Phone
-	Err_Account_Bind_WeChat
-	Err_Account_Bind_WeiBo
-	Err_Account_Bind_Facebook
-	Err_Account_Bind_Google
-	Err_Account_GetLevel
-	Err_Account_UserInfo_NotExist
-	Err_Account_Blacklist_Add
-	Err_Account_Blacklist_Update
-	Err_Account_Blacklist_Del
-	Err_Account_Blacklist_Get
-	Err_Account_Blacklist_Count
-	Err_Account_Nickname_Sensitive_Word
-	Err_Account_Realname_Sensitive_Word
-	Err_Account_UserResume_Sensitive_Word
-	Err_Account_AuthToken
-	Err_Account_AuthPwd
-	Err_Account_ReadNameAuthChecking
-	Err_Account_ReadNameAuthOk
-	Err_Account_CheckUrl
-	Err_Account_Username_Len
-	Err_Account_Nickname_Len
-	Err_Account_Realname_Len
-	Err_Account_Username_Fmt
-	Err_Account_Nickname_Fmt
-	Err_Account_Realname_Fmt
-	Err_Account_UserResume_Fmt
-	Err_Account_IdCard_Fmt
-	Err_Account_Birthday_Fmt
-	Err_Account_Above_Vip
-	Err_Account_AreaCode_Fmt
-	Err_Account_Username_Sensitive_Word
-	Err_Account_IdCardNo_Exist
-	Err_Account_Email_Fmt
-	Err_Account_Check_IdCard_Date
-	Err_Account_Vo_Member
-	Err_Account_Position_Sensitive_Word
-	Err_Account_Level_Not_Vo
-	Err_Account_Level_Not_Vipp
-	Err_Account_Change_Vipp_Level
-	Err_Account_User_Disabled
-	Err_Account_Nickname_Conflict
-	Err_Account_Nickname_Change_Limited
-	Err_Account_MedalName_Exists
-	Err_Account_MedalFormat
-	Err_Account_SystemMedal
-	Err_Account_MedalRelation
-	Err_Account_Medal_NotExists
-	Err_Account_Medal_Duplicated
-	Err_Account_Certificate_NotExists
-	Err_Account_Certificate_Duplicated
-	Err_Account_AuthName_Sensitive_Word
-	Err_Account_AdditionalInfo_Sensitive_Word
-	Err_Account_Job_Sensitive_Word
-	Err_Account_Introduce_Sensitive_Word
-	Err_Account_Certificate_Type_Mismatch
-	Err_Account_Modify_Certificate_Condition
-	Err_Account_Not_TeamMember
-	Err_Account_Change_Nick_Once_PerMonth
+	// account service
+	ErrAccountNotExist                   = errOffsetAccount + iota //账号不存在",
+	ErrAccountExist                                                //账号已存在",
+	ErrAccountDisabled                                             //该用户已被封号",
+	ErrAccountPass                                                 //密码不正确",
+	ErrAccountSetUserProfile                                       //设置用户信息失败",
+	ErrAccountSensitiveNick                                        //昵称包含敏感词",
+	ErrAccountSensitiveRealname                                    //真实名称包含敏感词",
+	ErrAccountSensitiveAccount                                     //账号包含敏感词",
+	ErrAccountLenAccount                                           //仅支持6-15位字符",
+	ErrAccountLenNickname                                          //仅支持3-24位字符",
+	ErrAccountLenRealname                                          //真名长度错误",
+	ErrAccountLenPass                                              //密码长度错误",
+	ErrAccountFmtAccount                                           //仅支持数字、字母、下划线，且必须以字母开头",
+	ErrAccountFmtNickname                                          //昵称中包含不被支持的字符",
+	ErrAccountFmtRealname                                          //真名格式错误",
+	ErrAccountAuthtoken                                            //验证令牌失败",
+	ErrAccountAuthpwd                                              //验证密码失败",
+	ErrAccountNicknameConflict                                     //该昵称已被占用",
+	ErrAccountNicknameChangeLimited                                //昵称修改次数已达上限",
+	ErrAccountNicknameChangeOncePermonth                           //"每个月最多可修改一次昵称",
+	ErrAccountVerificationChecking                                 //实名认证审核中",
+	ErrAccountVerificationOk                                       //实名认证已认证",
+	// login service
+	ErrAccountPhoneExist           //手机账号已存在",
+	ErrAccountPhoneNotExist        //手机账号不存在",
+	ErrAccountPhoneAreaNotSupport  // "不可以用该区号的手机号码注册",
+	ErrAccountPhoneInBlacklist     //该手机号码不能注册",
+	// 验证码
+	ErrVerifyCodeRegAlreadyExist   //该手机号码已经注册过，请使用其他手机号码注册",
+	ErrVerifyCodeResetPwdNotExist  //"没有查询到该手机号码的注册信息，请核对您绑定的手机号码",
+	ErrVerifyCodeBindAlreadyExist  //该手机号码已经注册过，请使用其他手机号码绑定",
+	ErrVerifyCodeCheck             //短信验证码验证失败",
+	// 第三方登陆
+	ErrAccountLoginType          //请选择登陆方式",
+	ErrAccountBindCancelOnlyOne  // "您尚未绑定其它登录方式，无法取消当前绑定方式",
+	ErrAccountBindGet            //获取账户绑定信息失败",
+	ErrAccountBindType           //不支持该类型的绑定方式",
+	ErrAccountBindPhone          //绑定手机账号失败",
+	ErrAccountBindWechat         //绑定微信账号失败",
+	ErrAccountBindWeibo          //绑定微博账号失败",
+	ErrAccountBindUid            //该登录方式已绑定其他账号，无法再绑定",
+	ErrAccountBindExist          //用户已绑定该登录方式",
+	ErrAccountBindNotExist       //用户没有绑定该登录方式",
+	ErrAccountVerifyWechat       //微信验证失败",
+	ErrAccountVerifyWeibo        //微博验证失败",
+	ErrAccountVerifyFacebook     //脸书验证失败",
+	ErrAccountVerifyGoogle       //谷歌验证失败",
+	ErrAccountTokenUpdate        //登录信息授权失败，您需要重新登录",
+	ErrAccountTokenFormat        //登录信息格式错误，您需要重新登录",
+	ErrAccountTokenUserid        //登录信息与用户信息不匹配，您需要重新登录",
+	ErrAccountTokenExpire        //登录信息已过期，您需要重新获取授权",
+	ErrAccountTokenRefresh       //登录信息已过期，您需要重新登录",
+	ErrAccountTokenNotEqual      //您的账号已在其它设备上登录，请重新登录
+	ErrAccountTokenVerify        //登录信息已过期，您需要重新登录,
 )

@@ -13,6 +13,32 @@ package util
 import "strconv"
 
 /*
+*@note 反转string序列
+*@note s string序列
+*@param index 需要删除节点的位置，0Base
+*@example
+*     {"1","3","2","4"} -> {"4","2","3","1"}
+*/
+func ReverseStrings(s []string) {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+}
+
+/*
+*@note 反转int序列
+*@note s int序列
+*@example
+*     {1,3,2,4} -> {4,2,3,1}
+*@return 返回新的slice
+*/
+func ReverseIntSlice(s []int) {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+}
+
+/*
 *@note 删除一个[]int的某个节点
 *@param slice 需要操作的slice
 *@param index 需要删除节点的位置，0Base

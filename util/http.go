@@ -4,7 +4,7 @@
  Time    : 2018/9/14 17:38
  Author  : yanue
  
- - 
+ - http相关
  
 ------------------------------- go ---------------------------------*/
 
@@ -24,57 +24,26 @@ import (
 	"time"
 )
 
+var privateBlocks []*net.IPNet
 /*
  * @note 私有地址列表
- * 10.0.0.0/8
- * 100.64.0.0/10
- * 127.0.0.0/8
- * 169.254.0.0/16
- * 172.16.0.0/12
- * 192.168.0.0/16
  */
-var privateBlocks []*net.IPNet
+var privateIps = []string{
+	"10.0.0.0/8",
+	"127.0.0.0/8",
+	"192.168.0.0/16",
+}
 
 func init() {
+	privateBlocks = make([]*net.IPNet, len(privateIps))
 	// Add each private block
-	privateBlocks = make([]*net.IPNet, 6)
-
-	_, block, err := net.ParseCIDR("10.0.0.0/8")
-	if err != nil {
-		panic(fmt.Sprintf("Bad cidr. Got %v", err))
+	for i, ipCidr := range privateIps {
+		_, block, err := net.ParseCIDR(ipCidr)
+		if err != nil {
+			panic(fmt.Sprintf("Bad cidr. Got %v", err))
+		}
+		privateBlocks[i] = block
 	}
-	privateBlocks[0] = block
-
-	_, block, err = net.ParseCIDR("100.64.0.0/10")
-	if err != nil {
-		panic(fmt.Sprintf("Bad cidr. Got %v", err))
-	}
-	privateBlocks[1] = block
-
-	_, block, err = net.ParseCIDR("127.0.0.0/8")
-	if err != nil {
-		panic(fmt.Sprintf("Bad cidr. Got %v", err))
-	}
-	privateBlocks[2] = block
-
-	_, block, err = net.ParseCIDR("169.254.0.0/16")
-	if err != nil {
-		panic(fmt.Sprintf("Bad cidr. Got %v", err))
-	}
-	privateBlocks[3] = block
-
-	_, block, err = net.ParseCIDR("172.16.0.0/12")
-	if err != nil {
-		panic(fmt.Sprintf("Bad cidr. Got %v", err))
-	}
-	privateBlocks[4] = block
-
-	_, block, err = net.ParseCIDR("192.168.0.0/16")
-	if err != nil {
-		panic(fmt.Sprintf("Bad cidr. Got %v", err))
-	}
-
-	privateBlocks[5] = block
 }
 
 /*
@@ -197,7 +166,7 @@ func RemotePost(url string, msg string) []byte {
 	common.Logs.Debug(url + "\n" + msg)
 
 	var httpClient = &http.Client{
-		Timeout: DEF_HTTP_TIMEOUT,
+		Timeout: httpTimeout,
 	}
 
 	req, err := http.NewRequest("POST", url, strings.NewReader(msg))
@@ -237,11 +206,11 @@ func RemotePost(url string, msg string) []byte {
  *@param uri 请求的地址
  *@param body post请求的body,二进制数据流，可用于传输序列化后的protobuf数据
  */
-func RemotePost_OctStream(uri string, body []byte) []byte {
+func RemotePostOctStream(uri string, body []byte) []byte {
 	common.Logs.Debug(uri)
 
 	var httpClient = &http.Client{
-		Timeout: DEF_HTTP_TIMEOUT,
+		Timeout: httpTimeout,
 	}
 
 	req, err := http.NewRequest("POST", uri, bytes.NewBuffer(body))
@@ -278,11 +247,11 @@ func RemotePost_OctStream(uri string, body []byte) []byte {
  *@param uri 请求的地址
  *@param body put请求的body,二进制数据流，可用于传输序列化后的protobuf数据
  */
-func RemotePut_OctStream(uri string, body []byte) []byte {
+func RemotePutOctStream(uri string, body []byte) []byte {
 	common.Logs.Debug(uri)
 
 	var httpClient = &http.Client{
-		Timeout: DEF_HTTP_TIMEOUT,
+		Timeout: httpTimeout,
 	}
 
 	req, err := http.NewRequest("PUT", uri, bytes.NewBuffer(body))
@@ -319,11 +288,11 @@ func RemotePut_OctStream(uri string, body []byte) []byte {
  *@param uri 请求的地址
  *@param body post请求的body,二进制数据流，可用于传输序列化后的protobuf数据
  */
-func RemotePost_ProtoStream(uri string, body []byte) []byte {
+func RemotePostProtoStream(uri string, body []byte) []byte {
 	common.Logs.Debug(uri)
 
 	var httpClient = &http.Client{
-		Timeout: DEF_HTTP_TIMEOUT,
+		Timeout: httpTimeout,
 	}
 
 	req, err := http.NewRequest("POST", uri, bytes.NewBuffer(body))
@@ -360,11 +329,11 @@ func RemotePost_ProtoStream(uri string, body []byte) []byte {
  *@param uri 请求的地址
  *@param body post请求的body，浏览器的原生 form 表单
  */
-func RemotePost_URLEncode(uri string, values url.Values) []byte {
+func RemotePostURLEncode(uri string, values url.Values) []byte {
 	common.Logs.Debug(uri)
 
 	var httpClient = &http.Client{
-		Timeout: DEF_HTTP_TIMEOUT,
+		Timeout: httpTimeout,
 	}
 
 	req, err := http.NewRequest("POST", uri, ioutil.NopCloser(strings.NewReader(values.Encode())))
@@ -401,11 +370,11 @@ func RemotePost_URLEncode(uri string, values url.Values) []byte {
  *@param uri 请求的地址
  *@param body post请求的body,Json数据
  */
-func RemotePost_Json(uri string, body []byte) []byte {
+func RemotePostJson(uri string, body []byte) []byte {
 	common.Logs.Debug(uri)
 
 	var httpClient = &http.Client{
-		Timeout: DEF_HTTP_TIMEOUT,
+		Timeout: httpTimeout,
 	}
 
 	req, err := http.NewRequest("POST", uri, bytes.NewBuffer(body))
@@ -483,7 +452,7 @@ func RemoteCallEx(funName, strUrl string) bool {
 func HttpRespond(w http.ResponseWriter, r *http.Request, d []byte) (int, error) {
 	var n int
 	var e error
-	if len(d) > HTTP_GZIP_LEN && r.Header.Get("Accept-Encoding") == "gzip" {
+	if len(d) > httpGzipLen && r.Header.Get("Accept-Encoding") == "gzip" {
 		w.Header().Set("Content-Encoding", "gzip")
 		gz := gzip.NewWriter(w)
 		defer gz.Close()

@@ -70,7 +70,7 @@ func initLogs() {
 	Logs = NewLogger(cfg, zapOptCaller).Sugar()
 }
 
-// New zap Logger with LogConfig and zap option
+// NewLogger is New zap Logger with LogConfig and zap option
 //
 // @param config *LogConfig
 // @param opts ...zap.Option
@@ -141,7 +141,7 @@ func NewLogger(config *LogConfig, opts ...zap.Option) (log *zap.Logger) {
 	return log
 }
 
-// Return a default lumberjack logger config
+// NewLoggerRotation Return a default lumberjack logger config
 //
 // @return *lumberjack.Logger
 //
@@ -165,7 +165,7 @@ func (cfg *LogConfig) NewLoggerRotation() *lumberjack.Logger {
 	}
 }
 
-// Ginzap returns a gin.HandlerFunc (middleware) that logs requests using uber-go/zap.
+// GinZapMiddleware returns a gin.HandlerFunc (middleware) that logs requests using uber-go/zap.
 //
 // Requests with errors are logged using zap.Error().
 // Requests without errors are logged using zap.Info().

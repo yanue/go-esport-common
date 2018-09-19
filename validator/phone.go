@@ -66,7 +66,7 @@ func (this *cRegexpPhoneCode) IsPhone(phone string, areaCode string) int32 {
 		}
 	}
 
-	return errcode.Err_InValid_Phone
+	return errcode.ErrInvalidPhone
 }
 
 /*
@@ -81,7 +81,7 @@ func (this *cRegexpPhoneCode) IsPhoneWithoutCode(phone string) int32 {
 		}
 	}
 
-	return errcode.Err_InValid_Phone
+	return errcode.ErrInvalidPhone
 }
 
 /*

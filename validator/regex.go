@@ -20,17 +20,32 @@ var (
 )
 
 /*
+*@note 是否为密码格式
+*@param pass 密码
+*@remark 错误码
+ */
+func (this *validator) IsPassword(pass string) int32 {
+	l := len(pass)
+
+	if l < LenMinPassword || l > LenMaxPassword {
+		return errcode.ErrInvalidPassword
+	}
+
+	return errcode.No_Error
+}
+
+/*
 *@note 是否为Email
 *@param email Email地址
 *@remark 错误码
  */
 func (this *validator) IsEmail(email string) int32 {
 	if email == "" {
-		return errcode.Err_Empty_Email
+		return errcode.ErrInvalidEmail
 	}
 
 	if !regexpEmail.MatchString(email) {
-		return errcode.Err_InValid_Email
+		return errcode.ErrInvalidEmail
 	}
 
 	return errcode.No_Error
@@ -43,13 +58,13 @@ func (this *validator) IsEmail(email string) int32 {
  */
 func (this *validator) IsUrl(uri string) int32 {
 	if uri == "" {
-		return errcode.Err_InValid_Url
+		return errcode.ErrInvalidUrl
 	}
 
 	// 通过原生url parse验证
 	_, err := url.ParseRequestURI(uri)
 	if err != nil {
-		return errcode.Err_InValid_Url
+		return errcode.ErrInvalidUrl
 	}
 
 	return errcode.No_Error

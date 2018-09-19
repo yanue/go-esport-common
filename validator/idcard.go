@@ -64,20 +64,20 @@ var (
 func (this *validator) IsIdCard(idCardNo string) int32 {
 	// 二代身份证
 	if len(idCardNo) != 18 {
-		return errcode.Err_InValid_IdCardNo
+		return errcode.ErrInvalidIdcardno
 	}
 
 	//1. 区域校验
 	if _, ok := idCardArea[idCardNo[0:2]]; !ok {
-		return errcode.Err_InValid_IdCardNo
+		return errcode.ErrInvalidIdcardno
 	}
 
 	//2. 校验生日,包括格式和范围
 	birth := idCardNo[6:14]
 	if date, err := time.Parse("20060102", birth); err != nil {
-		return errcode.Err_InValid_IdCardNo
+		return errcode.ErrInvalidIdcardno
 	} else if date.After(idCardMaxDate) && date.Before(idCardMinDate) {
-		return errcode.Err_InValid_IdCardNo
+		return errcode.ErrInvalidIdcardno
 	}
 
 	//3. 验证校验和
@@ -90,7 +90,7 @@ func (this *validator) IsIdCard(idCardNo string) int32 {
 
 	// 取模
 	if idCardCode[sum%11] != idCardNo[len(idCardNo)-1] {
-		return errcode.Err_InValid_IdCardNo
+		return errcode.ErrInvalidIdcardno
 	}
 
 	return errcode.No_Error
@@ -103,7 +103,7 @@ func (this *validator) IsIdCard(idCardNo string) int32 {
  */
 func (this *validator) IsIdCardAndBirthday(idCardNo string, birthday string) int32 {
 	if birthday == "" {
-		return errcode.Err_InValid_Birthday
+		return errcode.ErrInvalidBirthday
 	}
 
 	// 验证身份证
@@ -114,14 +114,14 @@ func (this *validator) IsIdCardAndBirthday(idCardNo string, birthday string) int
 	// 解析生日格式
 	inputDate, err := time.Parse("2006-01-02", birthday)
 	if err != nil {
-		return errcode.Err_InValid_Birthday
+		return errcode.ErrInvalidBirthday
 	}
 
 	nowDate := time.Now()
 
 	//出生日期时间不能大于今天,请检查!
 	if inputDate.Unix() > nowDate.Unix() {
-		return errcode.Err_InValid_Birthday
+		return errcode.ErrInvalidBirthday
 	}
 
 	var idBirthday string
@@ -137,7 +137,7 @@ func (this *validator) IsIdCardAndBirthday(idCardNo string, birthday string) int
 
 	//日期字符串中的8位生日数字
 	if idBirthday != strings.Replace(birthday, "-", "", -1) {
-		return errcode.Err_InValid_Birthday
+		return errcode.ErrInvalidBirthday
 	}
 
 	return errcode.No_Error
@@ -150,13 +150,13 @@ func (this *validator) IsIdCardAndBirthday(idCardNo string, birthday string) int
  */
 func (this *validator) IsBirthday(birthday string) int32 {
 	if birthday == "" {
-		return errcode.Err_InValid_Birthday
+		return errcode.ErrInvalidBirthday
 	}
 
 	// 解析生日格式YYYY-mm-dd格式
 	_, err := time.Parse("2006-01-02", birthday)
 	if err != nil {
-		return errcode.Err_InValid_Birthday
+		return errcode.ErrInvalidBirthday
 	}
 
 	return errcode.No_Error

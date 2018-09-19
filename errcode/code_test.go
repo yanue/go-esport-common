@@ -15,3 +15,7 @@ import "testing"
 func TestGetError(t *testing.T) {
 
 }
+
+func TestConvertJsonFile(t *testing.T) {
+	ConvertJsonFile("errcode.json")
+}

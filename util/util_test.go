@@ -9,3 +9,11 @@
 ------------------------------- go ---------------------------------*/
 
 package util
+
+import "testing"
+
+func TestStrTo_Exist(t *testing.T) {
+	var a StrTo = "12321"
+	c, d := a.Int64()
+	t.Logf("a:%v-%v", c, d)
+}

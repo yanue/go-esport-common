@@ -11,25 +11,29 @@
 package common
 
 import (
-	. "go.uber.org/zap"
+	"go.uber.org/zap"
 )
 
 const (
-	// 运行环境
-	EnvProduction = "prod"
-	EnvTest       = "test"
+	// EnvProduction
+	EnvProduction = "prod" //生产环境
+	EnvTest       = "test" //测试环境
 
-	// 微服务名
 	ServiceNameAccount = "account" // 账号相关微服务名
 
-	MicroServicePrefix      = "go.micro.service." // 微服务前缀
-	MicroServiceNameAccount = MicroServicePrefix + ServiceNameAccount
+	//MicroServicePrefix 微服务前缀
+	MicroServicePrefix      = "go.micro.service."
+	MicroServiceNameAccount = MicroServicePrefix + ServiceNameAccount // account微服务名
 )
 
 var (
-	LogPath   = "../logs"      // 默认的文本日志生成目录
-	LogLevel  = DebugLevel // 暴露日志等级给外部读取,注意必须是: zapcore.Level
-	ConfigEnv = ""             // 启动参数 EnvProduction|EnvTest
+	// LogPath 默认的文本日志生成目录
+	LogPath = "../logs"
+	// LogLevel 暴露日志等级给外部读取,注意必须是: zapcore.Level
+	LogLevel = zap.DebugLevel
+	// ConfigEnv 启动参数 EnvProduction|EnvTest
+	ConfigEnv = ""
 
-	Logs *SugaredLogger
+	// Logs 用于外部使用日志
+	Logs *zap.SugaredLogger
 )
