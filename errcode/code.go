@@ -64,7 +64,7 @@ func GetErrMsg(code int32, extraMsg ... string) string {
 		reply = resp
 	}
 
-	if len(extraMsg[0]) > 0 {
+	if len(extraMsg) > 0 {
 		if len(reply) > 0 {
 			reply = reply + "[" + extraMsg[0] + "]"
 		} else {

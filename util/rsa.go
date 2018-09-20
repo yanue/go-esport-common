@@ -32,9 +32,10 @@ import (
 	"crypto/rsa"
 	"crypto/sha256"
 	"crypto/x509"
+	"encoding/base64"
 	"encoding/pem"
 	"errors"
-	"fmt"
+	"strings"
 )
 
 // 可通过openssl产生
@@ -84,102 +85,115 @@ rwIDAQAB
 `)
 
 // 服务端-私钥加密
-func RsaEncryptPrivate(ciphertext []byte) ([]byte, error) {
+func RsaEncryptPrivate(cipherText string) (res string, err error) {
 	//获取私钥
 	block, _ := pem.Decode(privateKey)
 	if block == nil {
-		return nil, errors.New("private key error!")
+		err = errors.New("private key error!")
+		return
 	}
 
 	//解析PKCS1格式的私钥
 	pri, err := x509.ParsePKCS1PrivateKey(block.Bytes)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	// 分片
-	var data = packageData(ciphertext, pri.PublicKey.N.BitLen()/8-11)
+	var data = packageData([]byte(cipherText), pri.PublicKey.N.BitLen()/8-11)
 	var plainData = make([]byte, 0, 0)
-	fmt.Println("data", len(data))
+
 	// 每片解密
 	for _, d := range data {
 		var p, e = rsaPrivateEncrypt(pri, d)
 		if e != nil {
-			return nil, e
+			err = e
+			return
 		}
 		plainData = append(plainData, p...)
 	}
 
-	// 解密
-	return plainData, nil
+	// base64加密
+	return Base64UrlEncode(plainData), nil
 }
 
 // 服务端-私钥解密
-func RsaDecryptPrivate(ciphertext []byte) ([]byte, error) {
+func RsaDecryptPrivate(cipherText string) (res string, err error) {
 	//获取私钥
 	block, _ := pem.Decode(privateKey)
 	if block == nil {
-		return nil, errors.New("private key error!")
+		err = errors.New("private key error!")
+		return
 	}
 
 	//解析PKCS1格式的私钥
 	pri, err := x509.ParsePKCS1PrivateKey(block.Bytes)
 	if err != nil {
-		return nil, err
+		return
+	}
+
+	// base64解密
+	originalData, err := Base64UrlDecode(cipherText)
+	if err != nil {
+		return
 	}
 
 	// 分片
-	var data = packageData(ciphertext, pri.PublicKey.N.BitLen()/8)
+	var data = packageData(originalData, pri.PublicKey.N.BitLen()/8)
 	var plainData = make([]byte, 0, 0)
 
 	// 每片解密
 	for _, d := range data {
 		var p, e = rsa.DecryptPKCS1v15(rand.Reader, pri, d)
 		if e != nil {
-			return nil, e
+			err = e
+			return
 		}
 		plainData = append(plainData, p...)
 	}
 
 	// 解密
-	return plainData, nil
+	return string(plainData), nil
 }
 
 // 客户端-公钥加密
-func RsaEncryptPublic(plaintext []byte) ([]byte, error) {
+func RsaEncryptPublic(plainText string) (res string, err error) {
 	//解密pem格式的公钥
 	block, _ := pem.Decode(publicKey)
 	if block == nil {
-		return nil, errors.New("public key error")
+		err = errors.New("public key error")
+		return
 	}
 
 	// 解析公钥
 	pubInterface, err := x509.ParsePKIXPublicKey(block.Bytes)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	// 类型断言
 	pub := pubInterface.(*rsa.PublicKey)
 
 	// 数据分片
-	var data = packageData(plaintext, pub.N.BitLen()/8-11)
+	var data = packageData([]byte(plainText), pub.N.BitLen()/8-11)
 	var cipherData = make([]byte, 0, 0)
 
 	// 分片加密
 	for _, d := range data {
 		var c, e = rsa.EncryptPKCS1v15(rand.Reader, pub, d)
 		if e != nil {
-			return nil, e
+			err = e
+			return
 		}
 		cipherData = append(cipherData, c...)
 	}
 
-	return cipherData, nil
+	// base64加密
+	return Base64UrlEncode(cipherData), nil
 }
 
 // 客户端-公钥解密
-func RsaDecryptPublic(ciphertext []byte) (res []byte, err error) {
+func RsaDecryptPublic(cipherText string) (res string, err error) {
 	// 解密pem格式的公钥
 	block, _ := pem.Decode(publicKey)
 	if block == nil {
@@ -196,21 +210,27 @@ func RsaDecryptPublic(ciphertext []byte) (res []byte, err error) {
 	// 类型断言
 	pub := pubInterface.(*rsa.PublicKey)
 
+	// base64解密
+	originalData, err := Base64UrlDecode(cipherText)
+	if err != nil {
+		return
+	}
+
 	// 分片
-	var data = packageData(ciphertext, pub.N.BitLen()/8)
+	var data = packageData(originalData, pub.N.BitLen()/8)
 	var plainData = make([]byte, 0, 0)
 
 	// 每片解密
 	for _, d := range data {
 		var p, e = rsaPublicDecrypt(pub, d)
 		if e != nil {
-			return nil, e
+			err = e
+			return
 		}
 		plainData = append(plainData, p...)
 	}
 
-	// 解密
-	return plainData, nil
+	return string(plainData), nil
 }
 
 // 私钥签名
@@ -282,4 +302,40 @@ func packageData(originalData []byte, packageSize int) (r [][]byte) {
 	}
 
 	return r
+}
+
+/*
+*@note base64加密,针对url传输处理
+*@param data 原生数据
+*@return
+ */
+func Base64UrlEncode(data []byte) string {
+	str := base64.StdEncoding.EncodeToString(data)
+
+	// 处理url上字符串
+	str = strings.Replace(str, "+", "-", -1)
+	str = strings.Replace(str, "/", "_", -1)
+	str = strings.Replace(str, "=", "", -1)
+
+	return str
+}
+
+/*
+*@note base64解密,针对url传输处理
+*@param data 原生数据
+*@return
+ */
+func Base64UrlDecode(str string) ([]byte, error) {
+	if strings.ContainsAny(str, "+/") {
+		return nil, errors.New("invalid base64url encoding")
+	}
+
+	// 处理url上字符串
+	str = strings.Replace(str, "-", "+", -1)
+	str = strings.Replace(str, "_", "/", -1)
+	for len(str)%4 != 0 {
+		str += "="
+	}
+
+	return base64.StdEncoding.DecodeString(str)
 }
