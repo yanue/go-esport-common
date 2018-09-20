@@ -35,7 +35,6 @@ import (
 	"encoding/base64"
 	"encoding/pem"
 	"errors"
-	"strings"
 )
 
 // 可通过openssl产生
@@ -114,7 +113,7 @@ func RsaEncryptPrivate(cipherText string) (res string, err error) {
 	}
 
 	// base64加密
-	return Base64UrlEncode(plainData), nil
+	return base64.RawURLEncoding.EncodeToString(plainData), nil
 }
 
 // 服务端-私钥解密
@@ -133,7 +132,7 @@ func RsaDecryptPrivate(cipherText string) (res string, err error) {
 	}
 
 	// base64解密
-	originalData, err := Base64UrlDecode(cipherText)
+	originalData, err := base64.RawURLEncoding.DecodeString(cipherText)
 	if err != nil {
 		return
 	}
@@ -189,7 +188,7 @@ func RsaEncryptPublic(plainText string) (res string, err error) {
 	}
 
 	// base64加密
-	return Base64UrlEncode(cipherData), nil
+	return base64.RawURLEncoding.EncodeToString(cipherData), nil
 }
 
 // 客户端-公钥解密
@@ -211,7 +210,7 @@ func RsaDecryptPublic(cipherText string) (res string, err error) {
 	pub := pubInterface.(*rsa.PublicKey)
 
 	// base64解密
-	originalData, err := Base64UrlDecode(cipherText)
+	originalData, err := base64.RawURLEncoding.DecodeString(cipherText)
 	if err != nil {
 		return
 	}
@@ -302,40 +301,4 @@ func packageData(originalData []byte, packageSize int) (r [][]byte) {
 	}
 
 	return r
-}
-
-/*
-*@note base64加密,针对url传输处理
-*@param data 原生数据
-*@return
- */
-func Base64UrlEncode(data []byte) string {
-	str := base64.StdEncoding.EncodeToString(data)
-
-	// 处理url上字符串
-	str = strings.Replace(str, "+", "-", -1)
-	str = strings.Replace(str, "/", "_", -1)
-	str = strings.Replace(str, "=", "", -1)
-
-	return str
-}
-
-/*
-*@note base64解密,针对url传输处理
-*@param data 原生数据
-*@return
- */
-func Base64UrlDecode(str string) ([]byte, error) {
-	if strings.ContainsAny(str, "+/") {
-		return nil, errors.New("invalid base64url encoding")
-	}
-
-	// 处理url上字符串
-	str = strings.Replace(str, "-", "+", -1)
-	str = strings.Replace(str, "_", "/", -1)
-	for len(str)%4 != 0 {
-		str += "="
-	}
-
-	return base64.StdEncoding.DecodeString(str)
 }
