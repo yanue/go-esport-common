@@ -1,0 +1,31 @@
+syntax = "proto3";
+package proto;
+
+import "proto/account.proto";
+
+enum EJwtType {
+    PROTO = 0;
+    JSON = 1;
+}
+
+// jwt header信息
+message PJwtHeader {
+    string Alg = 1; //默认 "HS256",
+    string Typ = 2; //默认 JWT
+}
+
+// jwt payload信息
+message PJwtPayload {
+    ELoginType login_type = 1; // 用户登录的类型
+    int32 uid = 2; // 用户id
+    int64 time = 3; // token产生时间
+    Os os = 4; // token对应的客户端类型；ios,android,web
+}
+
+// jwt token信息
+message PJwtToken {
+    PJwtHeader Header = 1; // header
+    PJwtPayload Payload = 2; // playload
+    string Type = 3; //
+    string Signature = 4; // sign
+}

@@ -12,6 +12,11 @@ package util
 
 import "strconv"
 
+type sliceHelper struct {
+}
+
+var Slice *sliceHelper = new(sliceHelper)
+
 /*
 *@note 反转string序列
 *@note s string序列
@@ -19,7 +24,7 @@ import "strconv"
 *@example
 *     {"1","3","2","4"} -> {"4","2","3","1"}
 */
-func ReverseStrings(s []string) {
+func (this *sliceHelper) ReverseStrings(s []string) {
 	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
 		s[i], s[j] = s[j], s[i]
 	}
@@ -32,7 +37,7 @@ func ReverseStrings(s []string) {
 *     {1,3,2,4} -> {4,2,3,1}
 *@return 返回新的slice
 */
-func ReverseIntSlice(s []int) {
+func (this *sliceHelper) ReverseIntSlice(s []int) {
 	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
 		s[i], s[j] = s[j], s[i]
 	}
@@ -49,7 +54,7 @@ func ReverseIntSlice(s []int) {
 *     index = 0 -> slice = {2,3,4}
 *@return 返回新的slice
  */
-func RemoveIntSlice(slice []int, index int) []int {
+func (this *sliceHelper) RemoveIntSlice(slice []int, index int) []int {
 	max := len(slice)
 	if 0 == max {
 		return slice
@@ -79,7 +84,7 @@ func RemoveIntSlice(slice []int, index int) []int {
 *  start = 7 end = 10 -> slice = {1,2,3,4,5,6,7}
 *@return 返回新的slice
  */
-func RemovesIntSlice(slice []int, start, end int) []int {
+func (this *sliceHelper) RemovesIntSlice(slice []int, start, end int) []int {
 	/*
 	*@note 如果尾巴<开始，则不做任何操作
 	*@note 如果尾巴=开始，则先对于删除一个节点
@@ -88,7 +93,7 @@ func RemovesIntSlice(slice []int, start, end int) []int {
 		return slice
 	}
 	if end == start {
-		return RemoveIntSlice(slice, start)
+		return this.RemoveIntSlice(slice, start)
 	}
 
 	max := len(slice)
@@ -107,8 +112,19 @@ func RemovesIntSlice(slice []int, start, end int) []int {
 	return append(slice[:start], slice[end+1:]...)
 }
 
-// ***************************************
-func RemoveInt32Slice(slice []int32, index int) []int32 {
+/*
+*note 删除一个[]int的某一段节点
+*@param slice 需要操作的slice
+*@param start 需要删除节点的第一个的位置，0Base
+*@param end 需要删除节点的最后一个的位置，0Base
+*@example
+*  slice = {1,2,3,4,5,6,7}
+*  start = 0 end = 4 -> slice = {6,7}
+*  start = 6 end = 10 -> slice = {1,2,3,4,5,6}
+*  start = 7 end = 10 -> slice = {1,2,3,4,5,6,7}
+*@return 返回新的slice
+ */
+func (this *sliceHelper) RemoveInt32Slice(slice []int32, index int) []int32 {
 	max := len(slice)
 	if 0 == max {
 		return slice
@@ -138,7 +154,7 @@ func RemoveInt32Slice(slice []int32, index int) []int32 {
 *  start = 7 end = 10 -> slice = {1,2,3,4,5,6,7}
 *@return 返回新的slice
  */
-func RemovesInt32Slice(slice []int32, start, end int) []int32 {
+func (this *sliceHelper) RemovesInt32Slice(slice []int32, start, end int) []int32 {
 	/*
 	*@note 如果尾巴<开始，则不做任何操作
 	*@note 如果尾巴=开始，则先对于删除一个节点
@@ -147,7 +163,7 @@ func RemovesInt32Slice(slice []int32, start, end int) []int32 {
 		return slice
 	}
 	if end == start {
-		return RemoveInt32Slice(slice, start)
+		return this.RemoveInt32Slice(slice, start)
 	}
 
 	max := len(slice)
@@ -177,7 +193,7 @@ func RemovesInt32Slice(slice []int32, start, end int) []int32 {
 *     index = 0 -> slice = {2,3,4}
 *@return 返回新的slice
  */
-func RemoveStringSlice(slice []string, index int) []string {
+func (this *sliceHelper) RemoveStringSlice(slice []string, index int) []string {
 	max := len(slice)
 	if 0 == max {
 		return slice
@@ -206,7 +222,7 @@ func RemoveStringSlice(slice []string, index int) []string {
 *     dest = 0 -> slice = {1,2,3,4}
 *@return 返回新的slice
  */
-func RemoveStringSliceEx(slice []string, dest string) []string {
+func (this *sliceHelper) RemoveStringSliceEx(slice []string, dest string) []string {
 	max := len(slice)
 	if 0 == max {
 		return slice
@@ -248,7 +264,7 @@ func RemoveStringSliceEx(slice []string, dest string) []string {
 *     dest = "1" -> slice = {"1"}
 *@return 返回新的slice
  */
-func InsertSortStringSlice(slice []string, dest string) []string {
+func (this *sliceHelper) InsertSortStringSlice(slice []string, dest string) []string {
 	length := len(slice)
 	if 0 == length {
 		return []string{dest}

@@ -16,12 +16,17 @@ import (
 	"reflect"
 )
 
+type structHelper struct {
+}
+
+var Struct *structHelper = new(structHelper)
+
 /*
 *@note 结构转Map
 *@param obj 结构体
 *@return map[string]interface{}
  */
-func Struct2Map(obj interface{}) map[string]interface{} {
+func (this structHelper) ToMap(obj interface{}) map[string]interface{} {
 	t := reflect.TypeOf(obj)
 	v := reflect.ValueOf(obj)
 
@@ -37,7 +42,7 @@ func Struct2Map(obj interface{}) map[string]interface{} {
 *@param v 结构体
 *@return []byte
  */
-func Struct2Byte(v interface{}) []byte {
+func (this *structHelper) ToJsonByte(v interface{}) []byte {
 	reply, err := json.Marshal(v)
 	if err != nil {
 		common.Logs.Debug("Struct2Byte(%v) fail, err=%s", v, err.Error())
@@ -50,9 +55,9 @@ func Struct2Byte(v interface{}) []byte {
 /*
 *@note 结构转字符串
 *@param v 结构体
-*@return stirng
+*@return string
  */
-func Struct2String(v interface{}) string {
+func (this *structHelper) ToJsonString(v interface{}) string {
 	reply, err := json.Marshal(v)
 	if err != nil {
 		common.Logs.Debug("Struct2String(%v) fail, err=%s", v, err.Error())

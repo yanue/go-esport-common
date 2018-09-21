@@ -24,24 +24,24 @@ end.
 
 func TestRsaEncryptPrivate(t *testing.T) {
 	// 私钥加密,公钥解密
-	a, err := RsaEncryptPrivate(plainTxt)
+	a, err := Rsa.RsaEncryptPrivate(plainTxt)
 	fmt.Println("a", err, a)
-	b, err := RsaDecryptPublic(a)
+	b, err := Rsa.RsaDecryptPublic(a)
 	fmt.Println("b", err, string(b))
 }
 
 func TestRsaEncryptPublic(t *testing.T) {
 	// 公钥加密,私钥解密
-	a, err := RsaEncryptPublic(plainTxt)
+	a, err := Rsa.RsaEncryptPublic(plainTxt)
 	fmt.Println("a", err, a)
-	b, err := RsaDecryptPrivate(a)
+	b, err := Rsa.RsaDecryptPrivate(a)
 	fmt.Println("b", err, string(b))
 }
 
 func TestRsaSign(t *testing.T) {
 	// 私钥签名,公钥验证
-	a, err := RsaSign([]byte(plainTxt))
+	a, err := Rsa.RsaSign([]byte(plainTxt))
 	fmt.Println("a", err)
-	b := RsaSignVerify([]byte(plainTxt), a)
+	b := Rsa.RsaSignVerify([]byte(plainTxt), a)
 	fmt.Println("b", b)
 }

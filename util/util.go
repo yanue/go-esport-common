@@ -15,11 +15,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"time"
 )
 
-const httpGzipLen = 1024
-const httpTimeout = time.Second * 10
 
 /*
 *@note 得到当前exe程序执行的不目录

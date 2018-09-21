@@ -28,6 +28,11 @@ var (
 	jsonMarshal = jsonpb.Marshaler{}
 )
 
+type responseHelper struct {
+}
+
+var Response *responseHelper = new(responseHelper)
+
 /*
  *@note WritePbRespone http服务器针对proto.Message数据的回包，
  *@note 根据客户端的Content-Type判断回json格式还是proto格式
@@ -35,7 +40,7 @@ var (
  *@param r *http.Request
  *@param pb proto.Message
  */
-func WritePbResponse(w http.ResponseWriter, r *http.Request, pb proto.Message) {
+func (this *responseHelper) WritePbResponse(w http.ResponseWriter, r *http.Request, pb proto.Message) {
 	if r.Header.Get("Content-Type") == "application/json" || r.Header.Get("Request-From") == "x-web-json" {
 		w.Header().Set("Content-Type", "application/json")
 		reply, _ := json.Marshal(pb)
@@ -56,7 +61,7 @@ func WritePbResponse(w http.ResponseWriter, r *http.Request, pb proto.Message) {
  *@param r *http.Request
  *@param code 错误码，定义见PbResult
  */
-func WriteErrRespone(w http.ResponseWriter, r *http.Request, code int32) {
+func (this *responseHelper) WriteErrResponse(w http.ResponseWriter, r *http.Request, code int32) {
 	// json格式
 	if r.Header.Get("Content-Type") == "application/json" || r.Header.Get("Request-From") == "x-web-json" {
 		w.Header().Set("Content-Type", "application/json")
@@ -95,7 +100,7 @@ func WriteErrRespone(w http.ResponseWriter, r *http.Request, code int32) {
  *@param msg PMessage结构
  *@return error 是PResult返回error，不是PResult返回nil
  */
-func CheckPResult(msg *pb.PMessage) int32 {
+func (this *responseHelper) CheckPResult(msg *pb.PMessage) int32 {
 	if msg.Type == "PResult" {
 		err := int32(errcode.ErrCommonUnknownError)
 

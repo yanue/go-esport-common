@@ -12,12 +12,15 @@
 
  - 服务端只关心函数: RsaPrivateEncrypt,RsaPrivateDecrypt
 
- - 分片加密解密: (2048bit)
-   加密时分片长度: pri.PublicKey.N.BitLen()/8-11 = 245
-   解密时分片长度: pri.PublicKey.N.BitLen()/8    = 256
+ - 分片加密解密: (1024bit)
+   加密时分片长度: pri.PublicKey.N.BitLen()/8-11 = 117
+   解密时分片长度: pri.PublicKey.N.BitLen()/8    = 128
+
+ - 用法:
+	util.Rsa.RsaEncryptPrivate()
 
  - openssl生成私钥
-	openssl genrsa -out rsa_private_key.pem 2048
+	openssl genrsa -out rsa_private_key.pem 1024
 
  - openssl生成公钥
 	openssl rsa -in rsa_private_key.pem -pubout -out rsa_public_key.pem
@@ -38,34 +41,22 @@ import (
 )
 
 // 可通过openssl产生
-//openssl genrsa -out rsa_private_key.pem 2048
+//openssl genrsa -out rsa_private_key.pem 1024
 var privateKey = []byte(`
 -----BEGIN RSA PRIVATE KEY-----
-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
+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
 -----END RSA PRIVATE KEY-----
 `)
 
@@ -73,18 +64,20 @@ EwNHBgYK/oZ8+uxjulmA+kNEaq+1kuUq1d/WDCBD+5tXYYVoTZcU
 //openssl rsa -in rsa_private_key.pem -pubout -out rsa_public_key.pem
 var publicKey = []byte(`
 -----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArZ2Uc3jYTB+XS3NfWAaN
-WbT/5LXbKnd5N7gtDN0PrMf8GlDIf8Rf60zJRPD7lfGOnVhVJgHzLpxkq/NlNWb0
-rTQQ5RHt71mmiGLTiPlM6OLeB4g+fAHjRyWf0ijbRnX0tVkRlDOWllcSYHFy0jrT
-VJp9foTHcntYqnk5a0Q7/S+IGEBrSyBVbfgkthjPCKEI1mTxc07OOQhtCzo7pDI9
-8D9mD7Yx28NYIxOzeISYCS+VqWrkplaI1uWUNE/nNhh2qYffg3Lf50I8UnOcHGes
-TjmnUskUfW00dRCVlgGFLilrptuLOUbXcaqbdkkLreqlMH43j5WogDFRGhT6GX3F
-rwIDAQAB
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDTsw7li1oxyK5reumWnzQQ/kBl
+hFQN7PV09cTaokxUswkh9O8DjAci/eJk9kXOctnwUHOMyjXvt+GSkeCGHWk9m+Da
+CdCt6MaKjTm1EUbmy5tS68PaNovDdlPXVnpt8gRornWmTFxQ7FAxOVWFguaQEHRL
+3JrfLMeM690GGIUgPQIDAQAB
 -----END PUBLIC KEY-----
 `)
 
+type rsaHelper struct {
+}
+
+var Rsa *rsaHelper = new(rsaHelper)
+
 // 服务端-私钥加密
-func RsaEncryptPrivate(cipherText string) (res string, err error) {
+func (this *rsaHelper) RsaEncryptPrivate(cipherText string) (res string, err error) {
 	//获取私钥
 	block, _ := pem.Decode(privateKey)
 	if block == nil {
@@ -99,7 +92,7 @@ func RsaEncryptPrivate(cipherText string) (res string, err error) {
 	}
 
 	// 分片
-	var data = packageData([]byte(cipherText), pri.PublicKey.N.BitLen()/8-11)
+	var data = this.packageData([]byte(cipherText), pri.PublicKey.N.BitLen()/8-11)
 	var plainData = make([]byte, 0, 0)
 
 	// 每片解密
@@ -117,7 +110,7 @@ func RsaEncryptPrivate(cipherText string) (res string, err error) {
 }
 
 // 服务端-私钥解密
-func RsaDecryptPrivate(cipherText string) (res string, err error) {
+func (this *rsaHelper) RsaDecryptPrivate(cipherText string) (res string, err error) {
 	//获取私钥
 	block, _ := pem.Decode(privateKey)
 	if block == nil {
@@ -138,7 +131,7 @@ func RsaDecryptPrivate(cipherText string) (res string, err error) {
 	}
 
 	// 分片
-	var data = packageData(originalData, pri.PublicKey.N.BitLen()/8)
+	var data = this.packageData(originalData, pri.PublicKey.N.BitLen()/8)
 	var plainData = make([]byte, 0, 0)
 
 	// 每片解密
@@ -156,7 +149,7 @@ func RsaDecryptPrivate(cipherText string) (res string, err error) {
 }
 
 // 客户端-公钥加密
-func RsaEncryptPublic(plainText string) (res string, err error) {
+func (this *rsaHelper) RsaEncryptPublic(plainText string) (res string, err error) {
 	//解密pem格式的公钥
 	block, _ := pem.Decode(publicKey)
 	if block == nil {
@@ -174,7 +167,7 @@ func RsaEncryptPublic(plainText string) (res string, err error) {
 	pub := pubInterface.(*rsa.PublicKey)
 
 	// 数据分片
-	var data = packageData([]byte(plainText), pub.N.BitLen()/8-11)
+	var data = this.packageData([]byte(plainText), pub.N.BitLen()/8-11)
 	var cipherData = make([]byte, 0, 0)
 
 	// 分片加密
@@ -192,7 +185,7 @@ func RsaEncryptPublic(plainText string) (res string, err error) {
 }
 
 // 客户端-公钥解密
-func RsaDecryptPublic(cipherText string) (res string, err error) {
+func (this *rsaHelper) RsaDecryptPublic(cipherText string) (res string, err error) {
 	// 解密pem格式的公钥
 	block, _ := pem.Decode(publicKey)
 	if block == nil {
@@ -216,7 +209,7 @@ func RsaDecryptPublic(cipherText string) (res string, err error) {
 	}
 
 	// 分片
-	var data = packageData(originalData, pub.N.BitLen()/8)
+	var data = this.packageData(originalData, pub.N.BitLen()/8)
 	var plainData = make([]byte, 0, 0)
 
 	// 每片解密
@@ -233,7 +226,7 @@ func RsaDecryptPublic(cipherText string) (res string, err error) {
 }
 
 // 私钥签名
-func RsaSign(data []byte) ([]byte, error) {
+func (this *rsaHelper) RsaSign(data []byte) ([]byte, error) {
 	h := sha256.New()
 	h.Write(data)
 	hashed := h.Sum(nil)
@@ -254,7 +247,7 @@ func RsaSign(data []byte) ([]byte, error) {
 }
 
 // 公钥验证
-func RsaSignVerify(data []byte, signature []byte) error {
+func (this *rsaHelper) RsaSignVerify(data []byte, signature []byte) error {
 	hashed := sha256.Sum256(data)
 	block, _ := pem.Decode(publicKey)
 	if block == nil {
@@ -280,7 +273,7 @@ func RsaSignVerify(data []byte, signature []byte) error {
 *@param packageSize 没片大小
 *@return
  */
-func packageData(originalData []byte, packageSize int) (r [][]byte) {
+func (this *rsaHelper) packageData(originalData []byte, packageSize int) (r [][]byte) {
 	var src = make([]byte, len(originalData))
 	copy(src, originalData)
 

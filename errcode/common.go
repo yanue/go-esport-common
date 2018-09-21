@@ -46,6 +46,7 @@ const (
 // err msg
 var errMsgCommon = map[int32]string{
 	No_Error:                 "操作成功",
+	ErrCustomMsg:             "", // 自定义错误信息
 	ErrCommonUnknownError:    "未知错误",
 	ErrCommonUnknownRequest:  "未知请求",
 	ErrCommonRequestFrequent: "请求太频繁，请稍后再试",
@@ -60,6 +61,7 @@ var errMsgCommon = map[int32]string{
 // common err code
 const (
 	ErrCommonUnknownError    = errOffsetCommon + iota //未知错误",
+	ErrCustomMsg                                      // 自定义错误信息
 	ErrCommonUnknownRequest                           //未知请求",
 	ErrCommonRequestFrequent                          // "请求太频繁，请稍后再试",
 	ErrCommonMarshal                                  //网络传输失败，请稍后重试",

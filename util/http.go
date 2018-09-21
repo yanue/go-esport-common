@@ -13,45 +13,29 @@ package util
 import (
 	"bytes"
 	"compress/gzip"
-	"fmt"
 	"github.com/yanue/go-esport-common"
 	"io"
 	"io/ioutil"
-	"net"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
 )
 
-var privateBlocks []*net.IPNet
-/*
- * @note 私有地址列表
- */
-var privateIps = []string{
-	"10.0.0.0/8",
-	"127.0.0.0/8",
-	"192.168.0.0/16",
+const httpGzipLen = 1024
+const httpTimeout = time.Second * 10
+
+type httpHelper struct {
 }
 
-func init() {
-	privateBlocks = make([]*net.IPNet, len(privateIps))
-	// Add each private block
-	for i, ipCidr := range privateIps {
-		_, block, err := net.ParseCIDR(ipCidr)
-		if err != nil {
-			panic(fmt.Sprintf("Bad cidr. Got %v", err))
-		}
-		privateBlocks[i] = block
-	}
-}
+var Http *httpHelper = new(httpHelper)
 
 /*
  *@note Http远程调用
  *@param strUrl 请求的地址
  *@remark strUrl需要调用者做好urlencode
  */
-func RemoteCall(strUrl string) []byte {
+func (this *httpHelper) RemoteCall(strUrl string) []byte {
 	//r, err := http.NewRequest("GET", strUrl, nil)
 	//if err != nil {
 	//	fmt.Println("http.NewRequest: ", err.Error())
@@ -83,12 +67,31 @@ func RemoteCall(strUrl string) []byte {
 }
 
 /*
+*@note 带重试的Http远程调用，如果失败会最大重试3次
+*@param funName 功能模板名，只是会作为日志打印用
+*@param strUrl 请求的地址
+*@remark strUrl需要调用者做好urlencode
+ */
+func (this *httpHelper) RemoteCallWithTry(funName, strUrl string) bool {
+	ok := this.RemoteCall(strUrl) != nil
+	tryCount := 3
+	for ; !ok && tryCount > 0; tryCount-- {
+		// 失败重试3次
+		common.Logs.Warn("%s err %d, url=%s\n", funName, 4-tryCount, strUrl)
+		time.Sleep(1 * time.Second)
+		ok = this.RemoteCall(strUrl) != nil
+	}
+
+	return ok
+}
+
+/*
  *@note 带超时Http远程调用
  *@param strUrl 请求的地址
  *@param timeout 超时时间：单位毫秒
  *@remark strUrl需要调用者做好urlencode
  */
-func RemoteCallWithTimeout(strUrl string, timeout time.Duration) []byte {
+func (this *httpHelper) RemoteCallWithTimeout(strUrl string, timeout time.Duration) []byte {
 	var httpClient = &http.Client{
 		Timeout: timeout,
 	}
@@ -125,7 +128,7 @@ func RemoteCallWithTimeout(strUrl string, timeout time.Duration) []byte {
  *@param timeout 超时时间：单位毫秒
  *@remark strUrl需要调用者做好urlencode
  */
-func RemoteDeleteWithTimeout(strUrl string, timeout time.Duration) []byte {
+func (this *httpHelper) RemoteDeleteWithTimeout(strUrl string, timeout time.Duration) []byte {
 	var httpClient = &http.Client{
 		Timeout: timeout,
 	}
@@ -161,7 +164,7 @@ func RemoteDeleteWithTimeout(strUrl string, timeout time.Duration) []byte {
  *@note Http post
  *@param strUrl 请求的地址
  */
-func RemotePost(url string, msg string) []byte {
+func (this *httpHelper) RemotePost(url string, msg string) []byte {
 	//body := bytes.NewBuffer([]byte(msg))
 	common.Logs.Debug(url + "\n" + msg)
 
@@ -206,7 +209,7 @@ func RemotePost(url string, msg string) []byte {
  *@param uri 请求的地址
  *@param body post请求的body,二进制数据流，可用于传输序列化后的protobuf数据
  */
-func RemotePostOctStream(uri string, body []byte) []byte {
+func (this *httpHelper) RemotePostOctStream(uri string, body []byte) []byte {
 	common.Logs.Debug(uri)
 
 	var httpClient = &http.Client{
@@ -247,7 +250,7 @@ func RemotePostOctStream(uri string, body []byte) []byte {
  *@param uri 请求的地址
  *@param body put请求的body,二进制数据流，可用于传输序列化后的protobuf数据
  */
-func RemotePutOctStream(uri string, body []byte) []byte {
+func (this *httpHelper) RemotePutOctStream(uri string, body []byte) []byte {
 	common.Logs.Debug(uri)
 
 	var httpClient = &http.Client{
@@ -288,7 +291,7 @@ func RemotePutOctStream(uri string, body []byte) []byte {
  *@param uri 请求的地址
  *@param body post请求的body,二进制数据流，可用于传输序列化后的protobuf数据
  */
-func RemotePostProtoStream(uri string, body []byte) []byte {
+func (this *httpHelper) RemotePostProtoStream(uri string, body []byte) []byte {
 	common.Logs.Debug(uri)
 
 	var httpClient = &http.Client{
@@ -329,7 +332,7 @@ func RemotePostProtoStream(uri string, body []byte) []byte {
  *@param uri 请求的地址
  *@param body post请求的body，浏览器的原生 form 表单
  */
-func RemotePostURLEncode(uri string, values url.Values) []byte {
+func (this *httpHelper) RemotePostURLEncode(uri string, values url.Values) []byte {
 	common.Logs.Debug(uri)
 
 	var httpClient = &http.Client{
@@ -370,7 +373,7 @@ func RemotePostURLEncode(uri string, values url.Values) []byte {
  *@param uri 请求的地址
  *@param body post请求的body,Json数据
  */
-func RemotePostJson(uri string, body []byte) []byte {
+func (this *httpHelper) RemotePostJson(uri string, body []byte) []byte {
 	common.Logs.Debug(uri)
 
 	var httpClient = &http.Client{
@@ -410,7 +413,7 @@ func RemotePostJson(uri string, body []byte) []byte {
  *@note Http head 操作，目前仅返回StatusCode
  *@param strUrl 请求的地址
  */
-func RemoteHead(strUrl string) int {
+func (this *httpHelper) RemoteHead(strUrl string) int {
 	resp, err := http.Head(strUrl)
 	if err != nil {
 		common.Logs.Warn("http.Get: " + err.Error())
@@ -421,27 +424,6 @@ func RemoteHead(strUrl string) int {
 	return resp.StatusCode
 }
 
-//const smUrl = "http://222.73.117.158:80/msg/HttpBatchSendSM?account=wansha&pswd=Wans2531&mobile=%s&msg=%s"
-
-/*
-*@note 带重试的Http远程调用，如果失败会最大重试3次
-*@param funName 功能模板名，只是会作为日志打印用
-*@param strUrl 请求的地址
-*@remark strUrl需要调用者做好urlencode
- */
-func RemoteCallEx(funName, strUrl string) bool {
-	ok := RemoteCall(strUrl) != nil
-	tryCount := 3
-	for ; !ok && tryCount > 0; tryCount-- {
-		// 失败重试3次
-		common.Logs.Warn("%s err %d, url=%s\n", funName, 4-tryCount, strUrl)
-		time.Sleep(1 * time.Second)
-		ok = RemoteCall(strUrl) != nil
-	}
-
-	return ok
-}
-
 /*
 *@note HttpRespond 包装的http回包，支持gzip压缩
 *@param w http.ResponseWriter
@@ -449,7 +431,7 @@ func RemoteCallEx(funName, strUrl string) bool {
 *@param d 要发送的数据
 *@return 发送内容长度， 错误代码
  */
-func HttpRespond(w http.ResponseWriter, r *http.Request, d []byte) (int, error) {
+func (this *httpHelper) HttpRespond(w http.ResponseWriter, r *http.Request, d []byte) (int, error) {
 	var n int
 	var e error
 	if len(d) > httpGzipLen && r.Header.Get("Accept-Encoding") == "gzip" {
@@ -464,100 +446,4 @@ func HttpRespond(w http.ResponseWriter, r *http.Request, d []byte) (int, error) 
 	}
 
 	return n, e
-}
-
-/*
- *@note 获取本地启用的网卡IP
- */
-func GetActiveIP() []string {
-	return getIPv4Addresses(activeInterfaceAddresses(), false)
-}
-
-/*
- *@note 获取本地所有的私有地址
- */
-func GetPrivateIP() []string {
-	return getIPv4Addresses(activeInterfaceAddresses(), true)
-}
-
-// 返回启用的网卡IP地址列表
-func activeInterfaceAddresses() []net.Addr {
-	var upAddrs []net.Addr
-
-	ifaces, err := net.Interfaces()
-	if err != nil {
-		return nil
-	}
-
-	for _, iface := range ifaces {
-		// 已经启用
-		if iface.Flags&net.FlagUp == 0 {
-			continue
-		}
-		// 忽略本地回路地址
-		if iface.Flags&net.FlagLoopback != 0 {
-			continue
-		}
-		addresses, err := iface.Addrs()
-		if err != nil {
-			continue
-		}
-		upAddrs = append(upAddrs, addresses...)
-	}
-
-	return upAddrs
-}
-
-func getIPv4Addresses(addresses []net.Addr, private bool) []string {
-	var candidates []string
-
-	for _, rawAddr := range addresses {
-		var ip net.IP
-		switch addr := rawAddr.(type) {
-		case *net.IPAddr:
-			ip = addr.IP
-		case *net.IPNet:
-			ip = addr.IP
-		default:
-			continue
-		}
-
-		if ip.To4() == nil {
-			continue
-		}
-		if private && !isPrivateIP(ip.String()) {
-			continue
-		}
-		candidates = append(candidates, ip.String())
-	}
-	return candidates
-}
-
-/*
- *@note 是否是私有地址
- *ipStr ipv4地址
- */
-func isPrivateIP(ipStr string) bool {
-	ip := net.ParseIP(ipStr)
-	for _, priv := range privateBlocks {
-		if priv.Contains(ip) {
-			return true
-		}
-	}
-	return false
-}
-
-/*
-*@note 从ip:port这样的字符串取出ip
-*@param RemoteAddr ip:port的字符串，比如127.0.0.1:80
-*@return ip 127.0.0.1
- */
-func GetIP(RemoteAddr string) (ip string) {
-	idx := strings.Index(RemoteAddr, ":")
-	if -1 != idx {
-		ip = RemoteAddr[:idx]
-	} else {
-		ip = RemoteAddr
-	}
-	return
 }

@@ -11,6 +11,7 @@
 package common
 
 import (
+	pb "github.com/yanue/go-esport-common/proto"
 	"go.uber.org/zap"
 )
 
@@ -24,6 +25,12 @@ const (
 	//MicroServicePrefix 微服务前缀
 	MicroServicePrefix      = "go.micro.service."
 	MicroServiceNameAccount = MicroServicePrefix + ServiceNameAccount // account微服务名
+)
+
+const (
+	OS_ANDROID pb.Os = pb.Os_ANDROID
+	OS_IOS     pb.Os = pb.Os_IOS
+	OS_WEB     pb.Os = pb.Os_WEB
 )
 
 var (
