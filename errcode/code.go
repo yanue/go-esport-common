@@ -22,12 +22,14 @@ const (
 	No_Error         ErrNo = 0
 	errOffsetCommon  ErrNo = 1001000
 	errOffsetInvalid ErrNo = 1101000
-	errOffsetAccount ErrNo = 1201000
+	errOffsetSms     ErrNo = 1201000
+	errOffsetAccount ErrNo = 2101000
 )
 
 var errMsgAll = map[ErrNo]map[int32]string{
 	errOffsetCommon:  errMsgCommon,  // 公共错误码
 	errOffsetInvalid: errMsgInValid, // 无效相关的错误码
+	errOffsetSms:     errMsgSms,     // 短信消息
 	errOffsetAccount: errMsgAccount, // 账号相关错误码
 }
 

@@ -82,7 +82,8 @@ message PBytes {
  *@note 批量传输uuid
  */
 message PUids {
-    repeated string uids = 1; //一串uuid
+    //一串uid
+    repeated string uids = 1;
 }
 
 /*
@@ -138,8 +139,8 @@ message PBytesList {
  *@note kv结构
  */
 message PKeyVal {
-    string K = 1;
-    string V = 2;
+    string Key = 1;
+    string Val = 2;
 }
 
 /*
