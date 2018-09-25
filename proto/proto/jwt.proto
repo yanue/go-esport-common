@@ -10,22 +10,32 @@ enum EJwtType {
 
 // jwt header信息
 message PJwtHeader {
-    string Alg = 1; //默认 "HS256",
-    string Typ = 2; //默认 JWT
+    //默认 "HS256",
+    string Alg = 1;
+    //默认 JWT
+    string Typ = 2;
 }
 
 // jwt payload信息
 message PJwtPayload {
-    ELoginType login_type = 1; // 用户登录的类型
-    int32 uid = 2; // 用户id
-    int64 time = 3; // token产生时间
-    Os os = 4; // token对应的客户端类型；ios,android,web
+    // 用户登录的类型
+    ELoginType login_type = 1;
+    // 用户id
+    int32 uid = 2;
+    // token产生时间
+    int64 time = 3;
+    // token对应的客户端类型；ios,android,web
+    Os os = 4;
+    // 设备唯一标识
+    string device_id = 5;
 }
 
 // jwt token信息
 message PJwtToken {
-    PJwtHeader Header = 1; // header
-    PJwtPayload Payload = 2; // playload
-    string Type = 3; //
-    string Signature = 4; // sign
+    // header
+    PJwtHeader header = 1;
+    // playload
+    PJwtPayload payload = 2;
+    // sign
+    string Signature = 4;
 }

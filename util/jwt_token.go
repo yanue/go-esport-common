@@ -40,7 +40,16 @@ var JwtToken *jwtToken
 func init() {
 	// 初始化
 	JwtToken = &jwtToken{
-		PJwtToken: &pb.PJwtToken{},
+		PJwtToken: &pb.PJwtToken{
+			// header
+			Header: &pb.PJwtHeader{
+				Alg: "HS256",        // HMAC SHA256
+				Typ: jwtPayloadType, // JWT | proto
+			},
+
+			// Payload
+			Payload: &pb.PJwtPayload{},
+		},
 	}
 }
 
@@ -49,25 +58,54 @@ func init() {
 *@param uid 用户ID
 *@param os 	0: "ANDROID", 1: "IOS",	2: "WEB",
 *@param loginType 0: "ACCOUNT", 1: "PHONE",2: "WECHAT",3: "QQ",
+*@param deviceId 设备唯一标识
 *@return 生成的jwt
  */
-func (this *jwtToken) Generate(uid int, os pb.Os, loginType pb.ELoginType) (string, error) {
-	// header
-	this.Header = &pb.PJwtHeader{
-		Alg: "HS256",        // HMAC SHA256
-		Typ: jwtPayloadType, // JWT | proto
-	}
-
+func (this *jwtToken) Generate(uid int, os pb.Os, loginType pb.ELoginType, deviceId string) (token, payloadStr string, err error) {
 	// payload
 	this.Payload = &pb.PJwtPayload{
 		Uid:       int32(uid),
 		Time:      time.Now().Unix(),
 		Os:        os,
 		LoginType: loginType,
+		DeviceId:  deviceId,
 	}
 
-	// encode
-	return this.encode()
+	// 转成符合 JWT 标准的字符串
+	var header []byte
+	var payload []byte
+
+	// 以proto格式解析
+	if this.Header.Typ == "proto" {
+		header, err = proto.Marshal(this.Header)
+	} else {
+		header, err = json.Marshal(this.Header)
+	}
+	if err != nil {
+		err = errors.New("marshal header")
+		return
+	}
+
+	headerString := base64.RawURLEncoding.EncodeToString(header)
+
+	// 以proto格式解析
+	if this.Header.Typ == "proto" {
+		payload, err = proto.Marshal(this.Payload)
+	} else {
+		payload, err = json.Marshal(this.Payload)
+	}
+
+	if err != nil {
+		err = errors.New("marshal payload")
+		return
+	}
+
+	payloadStr = base64.RawURLEncoding.EncodeToString(payload)
+
+	format := headerString + "." + payloadStr
+	signature := this.getHmacCode(format)
+
+	return format + "." + signature, payloadStr, nil
 }
 
 /*
@@ -75,26 +113,29 @@ func (this *jwtToken) Generate(uid int, os pb.Os, loginType pb.ELoginType) (stri
 *@param tokenStr - jwt token字符串
 *@return *jwtToken
  */
-func (this *jwtToken) Verify(tokenStr string) (*jwtToken, error) {
-	var jwtHeader = &pb.PJwtHeader{}
-	var result = &pb.PJwtPayload{}
+func (this *jwtToken) Verify(tokenStr string) (token *jwtToken, payload string, err error) {
+	var jwtHeader = this.Header
+	var result = this.Payload
 
 	// 分拆
 	arr := strings.Split(tokenStr, ".")
 	if len(arr) != 3 {
-		return this, errors.New("invalid token")
+		err = errors.New("invalid token")
+		return
 	}
 
 	// 验证签名是否正确
 	format := arr[0] + "." + arr[1]
 	signature := this.getHmacCode(format)
 	if signature != arr[2] {
-		return this, errors.New("invalid signature")
+		err = errors.New("invalid signature")
+		return
 	}
 
 	header, err := base64.RawURLEncoding.DecodeString(arr[0])
 	if err != nil {
-		return this, errors.New("invalid header")
+		err = errors.New("invalid header base64")
+		return
 	}
 
 	// 以proto格式解析
@@ -105,12 +146,46 @@ func (this *jwtToken) Verify(tokenStr string) (*jwtToken, error) {
 	}
 
 	if err != nil {
-		return this, errors.New("invalid header")
+		err = errors.New("invalid header Unmarshal")
+		return
 	}
 
-	payload, err := base64.RawURLEncoding.DecodeString(arr[1])
+	payloadBuf, err := base64.RawURLEncoding.DecodeString(arr[1])
 	if err != nil {
-		return this, errors.New("invalid payload")
+		err = errors.New("invalid payload base64")
+		return
+	}
+
+	// 以proto格式解析
+	if this.Header.Typ == "proto" {
+		err = proto.Unmarshal(payloadBuf, result)
+	} else {
+		err = json.Unmarshal(payloadBuf, result)
+	}
+
+	if err != nil {
+		err = errors.New("invalid payload Unmarshal")
+		return
+	}
+
+	this.Header = jwtHeader
+	this.Payload = result
+
+	return this, arr[1], nil
+}
+
+/*
+*@note 验证token签名是否正确,并将内容解析出来
+*@param tokenStr - jwt token字符串
+*@return *jwtToken
+ */
+func (this *jwtToken) ParsePayload(payloadStr string) (result *pb.PJwtPayload, err error) {
+	result = this.Payload
+
+	payload, err := base64.RawURLEncoding.DecodeString(payloadStr)
+	if err != nil {
+		err = errors.New("invalid payload base64")
+		return
 	}
 
 	// 以proto格式解析
@@ -121,50 +196,11 @@ func (this *jwtToken) Verify(tokenStr string) (*jwtToken, error) {
 	}
 
 	if err != nil {
-		return this, errors.New("invalid payload")
+		err = errors.New("invalid payload Unmarshal")
+		return
 	}
 
-	this.Header = jwtHeader
-	this.Payload = result
-
-	return this, nil
-}
-
-// 转成符合 JWT 标准的字符串
-func (this *jwtToken) encode() (string, error) {
-	var err error
-
-	// 以proto格式解析
-	var header []byte
-	if this.Header.Typ == "proto" {
-		header, err = proto.Marshal(this.Header)
-	} else {
-		header, err = json.Marshal(this.Header)
-	}
-	if err != nil {
-		return "", errors.New("marshal header")
-	}
-
-	headerString := base64.RawURLEncoding.EncodeToString(header)
-	var payload []byte
-
-	// 以proto格式解析
-	if this.Header.Typ == "proto" {
-		payload, err = proto.Marshal(this.Payload)
-	} else {
-		payload, err = json.Marshal(this.Payload)
-	}
-
-	if err != nil {
-		return "", errors.New("marshal payload")
-	}
-
-	payloadString := base64.RawURLEncoding.EncodeToString(payload)
-
-	format := headerString + "." + payloadString
-	signature := this.getHmacCode(format)
-
-	return format + "." + signature, nil
+	return result, nil
 }
 
 // 生成签名

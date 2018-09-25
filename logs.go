@@ -22,11 +22,18 @@ import (
 	"time"
 )
 
+const (
+	// LogPath 默认的文本日志生成目录
+	logPath = "../logs"
+	// LogLevel 暴露日志等级给外部读取,注意必须是: zapcore.Level
+	logLevel = zap.DebugLevel
+)
+
 // LogConfig logger config
 // use lumberjack writing logs to rolling files.
 // Level as AtomicLevel is an atomically changeable, dynamic logging level.
 //
-type LogConfig struct {
+type logConfig struct {
 	// 日志切割配置
 	Rotation *lumberjack.Logger `json:"rotation" yaml:"rotation"`
 	// 日志文件目录
@@ -46,15 +53,15 @@ func init() {
 
 // 根据配置文件进行初始化
 func initLogs() {
-	cfg := new(LogConfig)
+	cfg := new(logConfig)
 	// 生产环境
 	if ConfigEnv == EnvProduction {
 		// 支持日志切割
 		cfg.Rolling = true
 		// 日志目录
-		cfg.LogPath = LogPath
+		cfg.LogPath = logPath
 		// 日志切割配置
-		cfg.Rotation = cfg.NewLoggerRotation()
+		cfg.Rotation = cfg.newLoggerRotation()
 		// 关闭开发模式
 		cfg.Development = false
 	} else {
@@ -63,11 +70,11 @@ func initLogs() {
 	}
 
 	// 日志级别
-	cfg.LogLevel = LogLevel
+	cfg.LogLevel = logLevel
 	// 显示文件及行号
 	zapOptCaller := zap.AddCaller()
 	// 初始化
-	Logs = NewLogger(cfg, zapOptCaller).Sugar()
+	Logs = cfg.newLogger(zapOptCaller).Sugar()
 }
 
 // NewLogger is New zap Logger with LogConfig and zap option
@@ -77,7 +84,7 @@ func initLogs() {
 //
 // @return *zap.Logger
 //
-func NewLogger(config *LogConfig, opts ...zap.Option) (log *zap.Logger) {
+func (config *logConfig) newLogger(opts ...zap.Option) (log *zap.Logger) {
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println("NewLogger err:", err)
@@ -105,7 +112,7 @@ func NewLogger(config *LogConfig, opts ...zap.Option) (log *zap.Logger) {
 	if config.Rolling {
 
 		if config.Rotation == nil {
-			config.Rotation = config.NewLoggerRotation()
+			config.Rotation = config.newLoggerRotation()
 		}
 
 		var enc zapcore.Encoder
@@ -141,11 +148,11 @@ func NewLogger(config *LogConfig, opts ...zap.Option) (log *zap.Logger) {
 	return log
 }
 
-// NewLoggerRotation Return a default lumberjack logger config
+// newLoggerRotation Return a default lumberjack logger config
 //
 // @return *lumberjack.Logger
 //
-func (cfg *LogConfig) NewLoggerRotation() *lumberjack.Logger {
+func (cfg *logConfig) newLoggerRotation() *lumberjack.Logger {
 	if len(cfg.LogPath) == 0 {
 		// set path
 		cfg.LogPath = "../logs"

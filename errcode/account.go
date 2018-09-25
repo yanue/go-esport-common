@@ -13,6 +13,7 @@ package errcode
 var errMsgAccount = map[int32]string{
 	// account service
 	ErrAccountNotExist:                   "账号不存在",
+	ErrAccountGetUserInfo:                "获取用户信息失败",
 	ErrAccountExist:                      "账号已存在",
 	ErrAccountDisabled:                   "该用户已被封号",
 	ErrAccountPassIncorrect:              "密码不正确",
@@ -57,13 +58,11 @@ var errMsgAccount = map[int32]string{
 	ErrAccountBindExist:         "用户已绑定该登录方式",
 	ErrAccountBindNotExist:      "用户没有绑定该登录方式",
 	ErrAccountVerifyWechat:      "微信验证失败",
-	ErrAccountVerifyWeibo:       "微博验证失败",
-	ErrAccountVerifyFacebook:    "脸书验证失败",
-	ErrAccountVerifyGoogle:      "谷歌验证失败",
+	ErrAccountVerifyQQ:          "QQ验证失败",
 	ErrAccountTokenGenerate:     "生成token失败,请重试!",
 	ErrAccountTokenUpdate:       "登录信息授权失败，您需要重新登录",
 	ErrAccountTokenFormat:       "登录信息格式错误，您需要重新登录",
-	ErrAccountTokenUserid:       "登录信息与用户信息不匹配，您需要重新登录",
+	ErrAccountTokenGet:          "获取登陆信息失败，您需要重新登录",
 	ErrAccountTokenExpire:       "登录信息已过期，您需要重新获取授权",
 	ErrAccountTokenRefresh:      "登录信息已过期，您需要重新登录", // 第三方登陆
 	ErrAccountTokenNotEqual:     "您的账号已在其它设备上登录，请重新登录",
@@ -74,6 +73,7 @@ var errMsgAccount = map[int32]string{
 const (
 	// account service
 	ErrAccountNotExist                   = errOffsetAccount + iota //账号不存在",
+	ErrAccountGetUserInfo                                          //获取用户信息失败",
 	ErrAccountExist                                                //账号已存在",
 	ErrAccountDisabled                                             //该用户已被封号",
 	ErrAccountPassIncorrect                                        //密码不正确",
@@ -118,13 +118,11 @@ const (
 	ErrAccountBindExist          //用户已绑定该登录方式",
 	ErrAccountBindNotExist       //用户没有绑定该登录方式",
 	ErrAccountVerifyWechat       //微信验证失败",
-	ErrAccountVerifyWeibo        //微博验证失败",
-	ErrAccountVerifyFacebook     //脸书验证失败",
-	ErrAccountVerifyGoogle       //谷歌验证失败",
+	ErrAccountVerifyQQ           //qq验证失败",
 	ErrAccountTokenGenerate      //登录信息授权失败，您需要重新登录",
 	ErrAccountTokenUpdate        //登录信息授权失败，您需要重新登录",
 	ErrAccountTokenFormat        //登录信息格式错误，您需要重新登录",
-	ErrAccountTokenUserid        //登录信息与用户信息不匹配，您需要重新登录",
+	ErrAccountTokenGet           //获取登陆信息失败，您需要重新登录,
 	ErrAccountTokenExpire        //登录信息已过期，您需要重新获取授权",
 	ErrAccountTokenRefresh       //登录信息已过期，您需要重新登录",
 	ErrAccountTokenNotEqual      //您的账号已在其它设备上登录，请重新登录

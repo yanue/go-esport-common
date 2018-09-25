@@ -16,17 +16,16 @@ import (
 	"testing"
 )
 
-func init() {
-	JwtToken = &jwtToken{
-		PJwtToken: &pb.PJwtToken{},
-	}
-}
-
 func TestJwtToken_GenerateToken(t *testing.T) {
 	// 生成
-	a, e := JwtToken.Generate(10243560, pb.Os_WEB, pb.ELoginType_ACCOUNT)
-	fmt.Println("a,e", a, e)
+	a, p, e := JwtToken.Generate(1024356, pb.Os_WEB, pb.ELoginType_ACCOUNT)
+	fmt.Println("a,e", a, p, e)
 	// 验证
-	c, e := JwtToken.Verify(a)
-	fmt.Println("c,e", c, e)
+	c, p, e := JwtToken.Verify(a)
+	fmt.Println("c,e", c, p, e)
+	// CgVIUzI1NhIFcHJvdG8.EOTCPhjGxabdBSAC
+	// CgVIUzI1NhIFcHJvdG8.EOTCPiAC.c6f1c6d547b05fdab6b63a050df2653be946d6f7f190ada757db3cbdcca51830 <nil>
+	// CgVIUzI1NhIFcHJvdG8.EOTCPiAC.c6f1c6d547b05fdab6b63a050df2653be946d6f7f190ada757db3cbdcca51830 <nil>
+	d, e := JwtToken.ParsePayload(p)
+	fmt.Println("d,e", d, e)
 }

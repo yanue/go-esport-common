@@ -4,24 +4,41 @@ package proto;
 import "proto/base.proto";
 
 message PUser {
-    int32 id = 1; // 用户id
-    string name = 2; // 用户名/昵称
-    string phone = 3; // 手机号
-    string email = 4; // 邮箱
-    int32 gender = 5; // 性别: 0未设置,1男,2女
-    int32 school_id = 6; // 学校id
-    int32 class_id = 7; // 班级id
-    int32 area_id = 8; // 区域id
-    int32 identity_status = 9; // 区域id
-    int32 created = 10; // 注册时间
+    // 用户id
+    int32 id = 1;
+    // 登陆账号
+    string account = 2;
+    // 手机号
+    // 用户名/昵称
+    string name = 3;
+    // 手机号
+    string phone = 4;
+    // 邮箱
+    string email = 5;
+    // 性别: 0未设置,1男,2女
+    int32 gender = 6;
+    // 学校id
+    int32 school_id = 7;
+    // 班级id
+    int32 class_id = 8;
+    // 区域id
+    int32 area_id = 9;
+    // 认证状态
+    int32 identity_status = 10;
+    // 注册时间
+    int32 created = 11;
 }
 
 // 登陆方式
 enum ELoginType {
-    ACCOUNT = 0; // 账号
-    PHONE = 1; // 手机号
-    WECHAT = 2; // 微信
-    QQ = 3; // qq
+    // 账号
+    ACCOUNT = 0;
+    // 手机号
+    PHONE = 1;
+    // 微信
+    WECHAT = 2;
+    // qq
+    QQ = 3;
 }
 
 // 登陆方式
@@ -31,38 +48,57 @@ enum Os {
     WEB = 2; // 微信
 }
 
+// 登陆所需结构
+message PLoginData {
+    // 手机号
+    string phone = 1;
+    // 验证码
+    string verify_code = 2;
+    // 账号
+    string account = 3;
+    // 密码,已使用rsa加密
+    string password = 4;
+    // 登陆方式
+    ELoginType login_type = 5;
+    // 登陆设备os
+    Os os = 6;
+    // 登陆设备唯一标识
+    string device_id = 7;
+}
+
 // 用户及jwt token信息
 // 登陆及注册下使用
 message PUserAndToken {
-    PUser user = 1; // 用户信息
-    string token = 2; // jwt token信息
-}
-
-// 登陆所需结构
-message PLoginData {
-    string phone = 1; // 手机号
-    string verify_code = 2; // 验证码
-    string account = 3; // 账号
-    string password = 4; // 密码 todo 加密问题
-    ELoginType login_type = 5; // 登陆方式
-    Os os = 6;
+    // 用户信息
+    PUser user = 1;
+    // jwt token信息
+    string token = 2;
 }
 
 // 登陆所需结构
 message PRegData {
-    string phone = 1; // 手机号
-    string verify_code = 2; // 验证码
-    string account = 3; // 账号
-    string password = 4; // 密码 todo 加密问题
+    // 手机号
+    string phone = 1;
+    // 验证码
+    string verify_code = 2;
+    // 账号
+    string account = 3;
+    // 密码,已使用rsa加密
+    string password = 4;
 }
 
 // 用户已绑定的登录方式信息
 message PLoignBindInfo {
-    string Account = 1; // 用户名，没有则为空
-    string Phone = 2; // 手机号码，没有则为空
-    bool Wechat = 3; // 是否已绑定微信，绑定为true，未绑定为false
-    bool QQ = 7; // 是否已绑定QQ，绑定为true，未绑定为false
-    bool WeiBo = 4; // 是否已绑定微博，绑定为true，未绑定为false
+    // 用户名，没有则为空
+    string Account = 1;
+    // 手机号码，没有则为空
+    string Phone = 2;
+    // 是否已绑定微信，绑定为true，未绑定为false
+    bool Wechat = 3;
+    // 是否已绑定QQ，绑定为true，未绑定为false
+    bool QQ = 7;
+    // 是否已绑定微博，绑定为true，未绑定为false
+    bool WeiBo = 4;
 }
 
 message PLoignBindInfoList {
@@ -79,8 +115,11 @@ service Account {
     // 获取验证码
     rpc GetVerifyCode (PString) returns (PBool) {
     }
-    // 获取账号信息
-    rpc GetAccountInfo (PInt32) returns (PUser) {
+    // 获取账号信息(需验证登陆情况)
+    rpc GetAccountInfo (PNoParam) returns (PUser) {
+    }
+    // 获取用户信息
+    rpc GetUserInfo (PInt32) returns (PUser) {
     }
 }
 

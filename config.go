@@ -34,10 +34,6 @@ const (
 )
 
 var (
-	// LogPath 默认的文本日志生成目录
-	LogPath = "../logs"
-	// LogLevel 暴露日志等级给外部读取,注意必须是: zapcore.Level
-	LogLevel = zap.DebugLevel
 	// ConfigEnv 启动参数 EnvProduction|EnvTest
 	ConfigEnv = ""
 

@@ -25,6 +25,18 @@ message PMessage {
 }
 
 /*
+ *@note 不需要参数
+ */
+message PNoParam {
+}
+
+/*
+ *@note 无需响应数据
+ */
+message PNoResponse {
+}
+
+/*
  *@note 单独传输bool
  */
 message PBool {
@@ -42,14 +54,14 @@ message PString {
  *@note 单独传输int32
  */
 message PInt32 {
-    int32 i32 = 1;
+    int32 val = 1;
 }
 
 /*
  *@note 单独传输int64
  */
 message PInt64 {
-    int64 i64 = 1;
+    int64 val = 1;
 }
 
 /*
