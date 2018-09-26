@@ -18,10 +18,9 @@ import (
 )
 
 func TestNewSmsUtil(t *testing.T) {
-	appKey := "11111111"
-	appSecret := "22222222222222222222222222222222"
-	smsFreeSignName := "大鱼测试"
-	yunpianApiKey := "11111"
+	accessKeyId := "LTAIiCR1y6RAa2IC"
+	accessKeySecret := "pit2WJpgdhSwOEhzr42EdlXMuTdhpn"
+	signName := "智享协同"
 
 	// 建立连接
 	client := redis.NewClient(&redis.Options{
@@ -39,7 +38,7 @@ func TestNewSmsUtil(t *testing.T) {
 
 	//common.Logs.Info("redis connected.")
 
-	sms := NewSms(appKey, appSecret, smsFreeSignName, yunpianApiKey, client)
-	err1 := sms.SendCode("13800000000", SmsCodeTypeBind, "112", AreaCode_CN, SmsLanguage_CN)
+	sms := NewSms(accessKeyId, accessKeySecret, signName, client)
+	err1 := sms.SendCode("18503002165", SmsCodeTypeBind, "112")
 	fmt.Println("err", err1, errcode.GetErrMsg(err1))
 }

@@ -13,10 +13,10 @@
 
 appKey = "11111111"
 appSecret = "22222222222222222222222222222222"
-smsFreeSignName = "大鱼测试"
+signName = "大鱼测试"
 yunpianApiKey := "11111"
 
-sms := NewSms(appKey, appSecret, smsFreeSignName, yunpianApiKey, client)
+sms := NewSms(accessKeyId, accessKeySecret, signName, client)
 err1 := sms.SendCode("13800000000", SmsCodeTypeBind, "112", AreaCode_CN, SmsLanguage_CN)
 fmt.Println("err", err1, errcode.GetErrMsg(err1))
 */
@@ -36,9 +36,19 @@ const (
 	VerifyCodeExpire = 20 * 60
 )
 
+type SmsLanguage int
+
+// 语言类型
+const (
+	SmsLanguage_CN SmsLanguage = iota // 简体中文
+	SmsLanguage_TW                    // 繁体中文
+	SmsLanguage_EN                    // 英文
+	SmsLanguage_KR                    // 韩文
+)
+
 const (
 	// 阿里大于短信模板
-	smsCommon_CN = "SMS_43130006"
+	smsCommon_CN = "SMS_129748714"
 )
 
 const (
@@ -48,9 +58,11 @@ const (
 	YunpianSmsCommon_KR = "1981082"
 )
 
+// 国家码
 type AreaCode string
 
 const (
+	// AreaCode_CN +86
 	AreaCode_CN AreaCode = validator.AreaCode_CN
 	AreaCode_HK AreaCode = validator.AreaCode_HK
 	AreaCode_TW AreaCode = validator.AreaCode_TW
@@ -62,30 +74,35 @@ const (
 type CodeType string
 
 const (
-	SmsCodeTypeReg        CodeType = "reg"
+	// SmsCodeTypeReg 注册
+	SmsCodeTypeReg CodeType = "reg"
+	// SmsCodeTypeReg 快捷登陆
 	SmsCodeTypeQuickLogin CodeType = "quick_login"
-	SmsCodeTypeResetPass  CodeType = "reset_pass"
-	SmsCodeTypeBind       CodeType = "bind"
+	// SmsCodeTypeResetPass 重置密码
+	SmsCodeTypeResetPass CodeType = "reset_pass"
+	// SmsCodeTypeBind 手机号绑定
+	SmsCodeTypeBind CodeType = "bind"
 )
 
 const (
+	// 用于控制短信发送频度key
 	smsRedisKeyImei = "sms:imei:"
 )
 
 // 获取redis中短信相关的key值
 var smsRedisKey = map[CodeType]string{
-	// PrefixRegVerifyCode 短信注册验证码前缀
-	SmsCodeTypeReg: "sms:regvercode:",
-	// PrefixPwdVerifyCode 密码重置验证码前缀
-	SmsCodeTypeResetPass: "sms:pwdvercode:",
-	// PrefixBindVerifyCode 修改绑定手机验证码前缀
-	SmsCodeTypeBind: "sms:bindvercode:",
-	// PrefixQuickLoginVerifyCode 快捷登陆
-	SmsCodeTypeQuickLogin: "sms:quickloginvercode:",
+	// SmsCodeTypeReg 短信注册码前缀
+	SmsCodeTypeReg: "sms:reg:",
+	// SmsCodeTypeResetPass 密码重置验证码前缀
+	SmsCodeTypeResetPass: "sms:pass:",
+	// SmsCodeTypeBind 修改绑定手机验证码前缀
+	SmsCodeTypeBind: "sms:bind:",
+	// SmsCodeTypeQuickLogin 快捷登陆
+	SmsCodeTypeQuickLogin: "sms:login:",
 }
 
 type SmsUtil struct {
-	smsSdk
+	*smsSdk
 	redis *redis.Client
 }
 
@@ -93,18 +110,20 @@ type SmsUtil struct {
  *@note 短信通知(频率限制)
  *@param appKey 阿里短信appKey
  *@param appSecret 阿里短信appSecret
- *@param smsFreeSignName 阿里短信smsFreeSignName
+ *@param signName 阿里短信signName
  *@param yunpianApiKey 云片短信apikey
  *@param redisClient *redis.Client
  *@return SmsUtil
  */
-func NewSms(appKey, appSecret, smsFreeSignName, yunPianApiKey string, redisClient *redis.Client) *SmsUtil {
+func NewSms(accessKeyId, accessKeySecret, signName string, redisClient *redis.Client) *SmsUtil {
 	return &SmsUtil{
-		smsSdk: smsSdk{
-			AppKey:          appKey,
-			AppSecret:       appSecret,
-			SmsFreeSignName: smsFreeSignName,
-			YunpianApiKey:   yunPianApiKey,
+		smsSdk: &smsSdk{
+			AliSmsSdk: &AliSmsSdk{
+				AccessKeyId:     accessKeyId,
+				AccessKeySecret: accessKeySecret,
+				SignName:        signName,
+			},
+			YunpianApiKey: "", // 云片短信的支持 todo
 		},
 		redis: redisClient,
 	}
@@ -114,26 +133,27 @@ func NewSms(appKey, appSecret, smsFreeSignName, yunPianApiKey string, redisClien
  *@note 发送短信
  *@param phone 手机号
  *@param codeType 短信类型
- *@param smsFreeSignName 短信签名
- *@param redisPool
+ *@param signName 短信签名
+ *@param imei 设备号 - 设备号用于控制短信发送频度(app触发的短信必须带上imei)
+ *@param area 国家码
  *@return SmsUtil
  */
-func (this *SmsUtil) SendCode(phone string, codeType CodeType, imei string, area AreaCode, lang SmsLanguage) int32 {
+func (this *SmsUtil) SendCode(phone string, codeType CodeType, imei string) int32 {
 	// 检查手机号
-	if errno := validator.Verify.IsPhone(phone, string(area)); errno > 0 {
+	if errno := validator.Verify.IsPhoneWithoutCode(phone); errno > 0 {
 		return errno
+	}
+
+	// 未带imei参数
+	if imei != "" {
+		pass := this.checkSmsLimit(this.redis, imei)
+		if pass == false {
+			return errcode.ErrSmsMobileCountOverLimit
+		}
 	}
 
 	// 生成验证码
 	code := this.randNumber(6)
-
-	// 未带imei参数
-	if imei != "" {
-		pass := this.isPassSmsCheck(this.redis, imei)
-		if pass == false {
-			return errcode.Err_Sms_MOBILE_COUNT_OVER_LIMIT
-		}
-	}
 
 	// 保存验证码信息
 	err := this.saveVerifyCode(codeType, phone, code)
@@ -142,7 +162,7 @@ func (this *SmsUtil) SendCode(phone string, codeType CodeType, imei string, area
 	}
 
 	// 发送验证码
-	errCode := this.smsSdk.SendCommonCode(phone, code, area, lang)
+	errCode := this.smsSdk.SendCommonCode(phone, code, AreaCode_CN, SmsLanguage_CN)
 	if errCode == errcode.No_Error && imei != "" {
 		// 刷新验证码发送限制
 		this.renewSmsLimit(imei)
@@ -164,12 +184,13 @@ func (this *SmsUtil) VerifyCode(phone, code string, codeType CodeType, isDelete 
 		return false
 	}
 
-	vKey, ok := smsRedisKey[codeType];
+	vKey, ok := smsRedisKey[codeType]
 	if !ok {
 		return false
 	}
 
-	verCode, _ := this.redis.Get(vKey).Result()
+	// 前缀+phone
+	verCode, _ := this.redis.Get(vKey + phone).Result()
 	if code == verCode {
 		if isDelete {
 			this.redis.Del(vKey)
@@ -185,7 +206,8 @@ func (this *SmsUtil) VerifyCode(phone, code string, codeType CodeType, isDelete 
  */
 func (this *SmsUtil) saveVerifyCode(codeType CodeType, phone, code string) error {
 	if key, ok := smsRedisKey[codeType]; ok {
-		_, err := this.redis.Set(key, code, VerifyCodeExpire*time.Second).Result()
+		// 前缀+phone
+		_, err := this.redis.Set(key+phone, code, VerifyCodeExpire*time.Second).Result()
 		return err
 	}
 
@@ -195,7 +217,7 @@ func (this *SmsUtil) saveVerifyCode(codeType CodeType, phone, code string) error
 /**
 @note 检查是否频繁发送验证码
  */
-func (this *SmsUtil) isPassSmsCheck(conn *redis.Client, imei string) bool {
+func (this *SmsUtil) checkSmsLimit(conn *redis.Client, imei string) bool {
 	// 一个手机设备号每分钟最多发送1条短信
 	count, _ := conn.Get(smsRedisKeyImei + "min:" + imei).Int()
 	if count > 0 {

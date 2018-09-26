@@ -23,7 +23,7 @@ require (
 	github.com/mitchellh/hashstructure v1.0.0 // indirect
 	github.com/mitchellh/mapstructure v1.0.0 // indirect
 	github.com/natefinch/lumberjack v0.0.0-20180817145747-7d6a1875575e
-	github.com/pborman/uuid v0.0.0-20180909234540-25cd46ecac86 // indirect
+	github.com/pborman/uuid v0.0.0-20180909234540-25cd46ecac86
 	github.com/pkg/errors v0.8.0 // indirect
 	github.com/ugorji/go/codec v0.0.0-20180831062425-e253f1f20942 // indirect
 	go.uber.org/atomic v1.3.2 // indirect

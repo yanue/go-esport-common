@@ -18,7 +18,7 @@ import (
 
 func TestJwtToken_GenerateToken(t *testing.T) {
 	// 生成
-	a, p, e := JwtToken.Generate(1024356, pb.Os_WEB, pb.ELoginType_ACCOUNT)
+	a, p, e := JwtToken.Generate(1024356, pb.Os_WEB, pb.ELoginType_ACCOUNT,"12222")
 	fmt.Println("a,e", a, p, e)
 	// 验证
 	c, p, e := JwtToken.Verify(a)
