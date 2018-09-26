@@ -4,7 +4,7 @@ require (
 	github.com/gin-contrib/sse v0.0.0-20170109093832-22d885f9ecc7 // indirect
 	github.com/gin-gonic/gin v1.3.0
 	github.com/go-log/log v0.1.0 // indirect
-	github.com/go-redis/redis v6.14.1+incompatible // indirect
+	github.com/go-redis/redis v6.14.1+incompatible
 	github.com/golang/protobuf v1.2.0
 	github.com/google/uuid v1.0.0 // indirect
 	github.com/hashicorp/consul v1.2.2 // indirect

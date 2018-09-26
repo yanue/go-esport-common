@@ -22,29 +22,29 @@ type cRegexpPhoneCode struct {
 }
 
 const (
-	CN_AreaCode = "+86"
-	HK_AreaCode = "+852"
-	MO_AreaCode = "+853"
-	TW_AreaCode = "+886"
-	US_AreaCode = "+1"
+	AreaCode_CN = "+86"
+	AreaCode_HK = "+852"
+	AreaCode_MO = "+853"
+	AreaCode_TW = "+886"
+	AreaCode_US = "+1"
 )
 
 // 手机号验证规则
 var regexpWithAreaCode = map[string]*regexp.Regexp{
-	CN_AreaCode: regexp.MustCompile(`^(\+86)((1[1-9][0-9])|(14[5,7])|(17[0-9]))[0-9]{8}$`), //中国
-	HK_AreaCode: regexp.MustCompile(`^(\+852)(9|6|5)[0-9]{7}$`),                            //香港
-	MO_AreaCode: regexp.MustCompile(`^(\+853)(66|68)[0-9]{5}$`),                            //澳门
-	TW_AreaCode: regexp.MustCompile(`^(\+886)9[0-9]{8}$`),                                  //台湾
-	US_AreaCode: regexp.MustCompile(`^(\+1)[0-9]{10}$`),                                    //美国
+	AreaCode_CN: regexp.MustCompile(`^(\+86)((1[1-9][0-9])|(14[5,7])|(17[0-9]))[0-9]{8}$`), //中国
+	AreaCode_HK: regexp.MustCompile(`^(\+852)(9|6|5)[0-9]{7}$`),                            //香港
+	AreaCode_MO: regexp.MustCompile(`^(\+853)(66|68)[0-9]{5}$`),                            //澳门
+	AreaCode_TW: regexp.MustCompile(`^(\+886)9[0-9]{8}$`),                                  //台湾
+	AreaCode_US: regexp.MustCompile(`^(\+1)[0-9]{10}$`),                                    //美国
 }
 
 // 手机号验证规则
 var regexpWithoutAreaCode = map[string]*regexp.Regexp{
-	CN_AreaCode: regexp.MustCompile(`^(\+86)?((1[1-9][0-9])|(14[5,7])|(17[0-9]))[0-9]{8}$`), //中国
-	HK_AreaCode: regexp.MustCompile(`^(\+852)?(9|6|5)[0-9]{7}$`),                            //香港
-	MO_AreaCode: regexp.MustCompile(`^(\+853)?(66|68)[0-9]{5}$`),                            //澳门
-	TW_AreaCode: regexp.MustCompile(`^(\+886)?9[0-9]{8}$`),                                  //台湾
-	US_AreaCode: regexp.MustCompile(`^(\+1)?[0-9]{10}$`),                                    //美国
+	AreaCode_CN: regexp.MustCompile(`^(\+86)?((1[1-9][0-9])|(14[5,7])|(17[0-9]))[0-9]{8}$`), //中国
+	AreaCode_HK: regexp.MustCompile(`^(\+852)?(9|6|5)[0-9]{7}$`),                            //香港
+	AreaCode_MO: regexp.MustCompile(`^(\+853)?(66|68)[0-9]{5}$`),                            //澳门
+	AreaCode_TW: regexp.MustCompile(`^(\+886)?9[0-9]{8}$`),                                  //台湾
+	AreaCode_US: regexp.MustCompile(`^(\+1)?[0-9]{10}$`),                                    //美国
 }
 
 /*
