@@ -85,8 +85,9 @@ const (
 )
 
 const (
-	// 用于控制短信发送频度key
-	smsRedisKeyImei = "sms:imei:"
+	// 用于控制短信发送频度key 没法
+	smsRedisKeyImeiMinute = "sms:imei:minute:" // 每分钟1条
+	smsRedisKeyImeiHour   = "sms:imei:hour:"   // 每小时6条
 )
 
 // 获取redis中短信相关的key值
@@ -146,9 +147,8 @@ func (this *SmsUtil) SendCode(phone string, codeType CodeType, imei string) int3
 
 	// 未带imei参数
 	if imei != "" {
-		pass := this.checkSmsLimit(this.redis, imei)
-		if pass == false {
-			return errcode.ErrSmsMobileCountOverLimit
+		if errno := this.checkSmsLimit(imei); errno > 0 {
+			return errno
 		}
 	}
 
@@ -217,20 +217,20 @@ func (this *SmsUtil) saveVerifyCode(codeType CodeType, phone, code string) error
 /**
 @note 检查是否频繁发送验证码
  */
-func (this *SmsUtil) checkSmsLimit(conn *redis.Client, imei string) bool {
+func (this *SmsUtil) checkSmsLimit(imei string) int32 {
 	// 一个手机设备号每分钟最多发送1条短信
-	count, _ := conn.Get(smsRedisKeyImei + "min:" + imei).Int()
+	count, _ := this.redis.Get(smsRedisKeyImeiMinute + imei).Int()
 	if count > 0 {
-		return false
+		return errcode.ErrSmsLimitMinute
 	}
 
 	// 一个手机设备号每小时最多发送6条短信
-	count, _ = conn.Get(smsRedisKeyImei + ":hour" + imei).Int()
+	count, _ = this.redis.Get(smsRedisKeyImeiHour + imei).Int()
 	if count > 6 {
-		return false
+		return errcode.ErrSmsLimitHour
 	}
 
-	return true
+	return errcode.No_Error
 }
 
 /**
@@ -238,18 +238,21 @@ func (this *SmsUtil) checkSmsLimit(conn *redis.Client, imei string) bool {
  */
 func (this *SmsUtil) renewSmsLimit(imei string) {
 	// 设置1分钟发送验证码信息
-	this.redis.Set(smsRedisKeyImei+"min:"+imei, 1, 60*time.Second)
+	this.redis.Set(smsRedisKeyImeiMinute+imei, 1, 60*time.Second)
 
 	// 设置1小时发送验证码信息
-	hKey := smsRedisKeyImei + "hour:" + imei
+	hKey := smsRedisKeyImeiHour + imei
+
 	hourCnt, _ := this.redis.Get(hKey).Int()
 	if hourCnt > 0 {
 		origExpire, _ := this.redis.TTL(hKey).Result()
 		if origExpire <= 0 {
 			origExpire = 3600
 		}
-		this.redis.Set(hKey, hourCnt+1, origExpire*time.Second)
+		// 剩下时间 origExpire
+		this.redis.Set(hKey, hourCnt+1, origExpire)
 	} else {
-		this.redis.Set(hKey, hourCnt+1, 3600*time.Second)
+		// 一小时
+		this.redis.Set(hKey, 1, 3600*time.Second)
 	}
 }

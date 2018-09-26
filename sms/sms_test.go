@@ -17,7 +17,9 @@ import (
 	"testing"
 )
 
-func TestNewSmsUtil(t *testing.T) {
+var sms *SmsUtil
+
+func init() {
 	accessKeyId := "LTAIiCR1y6RAa2IC"
 	accessKeySecret := "pit2WJpgdhSwOEhzr42EdlXMuTdhpn"
 	signName := "智享协同"
@@ -36,9 +38,38 @@ func TestNewSmsUtil(t *testing.T) {
 		panic("redis连接失败:" + err.Error())
 	}
 
-	//common.Logs.Info("redis connected.")
+	sms = NewSms(accessKeyId, accessKeySecret, signName, client)
+}
 
-	sms := NewSms(accessKeyId, accessKeySecret, signName, client)
+func TestNewSmsUtil(t *testing.T) {
 	err1 := sms.SendCode("18503002165", SmsCodeTypeBind, "112")
 	fmt.Println("err", err1, errcode.GetErrMsg(err1))
+
+	res := sms.VerifyCode("18503002165", "537431", SmsCodeTypeBind, false)
+	t.Logf("VerifyCode:%v", res)
+}
+
+func TestSmsUtil_SendCode(t *testing.T) {
+	imei := "112"
+	codeType := SmsCodeTypeBind
+	phone := "18503002165"
+	// 未带imei参数
+	if imei != "" {
+		if errno := sms.checkSmsLimit(imei); errno > 0 {
+			t.Logf("errno:%v", errcode.GetErrMsg(errno))
+		}
+	}
+
+	// 生成验证码
+	code := sms.randNumber(6)
+
+	// 保存验证码信息
+	err := sms.saveVerifyCode(codeType, phone, code)
+	if err != nil {
+		t.Logf("errno:%v", err)
+		return
+	}
+
+	// 刷新验证码发送限制
+	sms.renewSmsLimit(imei)
 }

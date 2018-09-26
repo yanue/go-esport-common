@@ -17,7 +17,6 @@ import (
 	"encoding/base32"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"github.com/pborman/uuid"
 	"github.com/yanue/go-esport-common"
 	"github.com/yanue/go-esport-common/errcode"
@@ -34,13 +33,13 @@ const aliSmsGatewayUrl = "https://dysmsapi.aliyuncs.com"
 var encoding = base32.NewEncoding("ybndrfg8ejkmcpqxot1uwisza345h897")
 
 /*
-{
-	Message: "签名不合法(不存在或被拉黑)",
-	RequestId: "3C506816-9F62-4F59-9A4B-1DFB0CE89219",
-	Code: "isv.SMS_SIGNATURE_ILLEGAL"
-}
+失败:
+{"Message":"签名不合法(不存在或被拉黑)","RequestId":"3C506816-9F62-4F59-9A4B-1DFB0CE89219","Code":"isv.SMS_SIGNATURE_ILLEGAL"}
+成功:
+{"Message":"OK","RequestId":"13224446-52BA-4B72-8A94-BE73D1547693","BizId":"857623737957293027^0","Code":"OK"}
 */
-type aliErrorResponse struct {
+type aliSmsResponse struct {
+	BizId     string `json:"BizId"`
 	Code      string `json:"Code"`
 	Message   string `json:"Message"`
 	RequestId string `json:"RequestId"`
@@ -71,18 +70,19 @@ type AliSmsSdk struct {
 
 // 发送验证码
 func (this *AliSmsSdk) sendAliSms(phoneNumbers, templateCode, templateParam string) ([]byte, int32) {
+	// 初始化基础参数
 	this.init()
 
+	// 其他输入参数
 	this.PhoneNumbers = phoneNumbers
 	this.TemplateCode = templateCode
 	this.TemplateParam = templateParam
 
+	// 构建带签名url
 	signUrl, errno := this.buildSignUrl()
 	if errno > 0 {
 		return nil, errno
 	}
-	common.Logs.Info("signUrl:", signUrl)
-	//return nil, 0
 
 	resp, err := http.Get(signUrl)
 	if err != nil {
@@ -95,15 +95,15 @@ func (this *AliSmsSdk) sendAliSms(phoneNumbers, templateCode, templateParam stri
 		return nil, errcode.ErrCommonRemotecall
 	}
 
-	common.Logs.Info("respData:", string(respData))
+	var respSms = new(aliSmsResponse)
+	json.Unmarshal(respData, respSms)
 
-	if strings.Contains(string(respData), "code") {
-		var e = new(aliErrorResponse)
-		json.Unmarshal(respData, e)
-		return nil, this.parseErr(e.Code)
+	// code is "OK"
+	if respSms.Code == "OK" {
+		return respData, errcode.No_Error
 	}
 
-	return respData, errcode.No_Error
+	return nil, this.parseErr(respSms.Code)
 }
 
 // 构建url
@@ -150,9 +150,6 @@ func (this *AliSmsSdk) buildSignUrl() (string, int32) {
 
 	// generate signature and sorted query
 	sortedQueryString, signature := this.generateQueryStringAndSignature(businessParams, systemParams)
-
-	fmt.Println("Signature:", signature)
-	fmt.Println("sortedQueryString:", sortedQueryString)
 
 	return aliSmsGatewayUrl + "?Signature=" + signature + "&" + sortedQueryString, 0
 }
@@ -237,44 +234,48 @@ func (this *AliSmsSdk) newSignatureNonce() string {
  */
 func (this *AliSmsSdk) parseErr(subCode string) (errCode int32) {
 	switch subCode {
-	case "isv.out-of-service":
+	case "isv.RAM_PERMISSION_DENY":
+		return errcode.ErrsmsPermissionDeny
+	case "isv.OUT_OF_SERVICE":
 		return errcode.ErrSmsOutOfService
-	case "isv.product-unsubscribe":
+	case "isv.PRODUCT_UN_SUBSCRIPT":
+		return errcode.ErrSmsOutOfService
+	case "isv.PRODUCT_UNSUBSCRIBE":
 		return errcode.ErrSmsProductUnsubscribe
-	case "isv.account-not-exists":
+	case "isv.ACCOUNT_NOT_EXISTS":
 		return errcode.ErrSmsAccountNotExists
-	case "isv.account-abnormal":
+	case "isv.ACCOUNT_ABNORMAL":
 		return errcode.ErrSmsAccountAbnormal
-	case "isv.sms-template-illegal":
+	case "isv.TEMPLATE_PARAMS_ILLEGAL":
 		return errcode.ErrSmsSmsTemplateIllegal
-	case "isv.sms-signature-illegal":
+	case "isv.SMS_SIGNATURE_ILLEGAL":
 		return errcode.ErrSmsSmsSignatureIllegal
-	case "isv.phone-number-illegal":
-		return errcode.ErrSmsMobileNumberIllegal
-	case "isv.phone-count-over-limit":
-		return errcode.ErrSmsMobileCountOverLimit
-	case "isv.template-missing-parameters":
-		return errcode.ErrSmsTemplateMissingParameters
-	case "isv.invalid-parameters":
+	case "isv.INVALID_PARAMETERS":
 		return errcode.ErrSmsInvalidParameters
-	case "isv.business-limit-control":
-		return errcode.ErrSmsBusinessLimitControl
-	case "isv.invalid-json-param":
-		return errcode.ErrSmsInvalidJsonParam
-	case "isv.system-error":
+	case "isv.SYSTEM_ERROR":
 		return errcode.ErrSmsSystemError
-	case "isv.black-key-control-limit":
+	case "isv.MOBILE_NUMBER_ILLEGAL":
+		return errcode.ErrSmsMobileNumberIllegal
+	case "isv.MOBILE_COUNT_OVER_LIMIT":
+		return errcode.ErrSmsMobileCountOverLimit
+	case "isv.TEMPLATE_MISSING_PARAMETERS":
+		return errcode.ErrSmsTemplateMissingParameters
+	case "isv.BUSINESS_LIMIT_CONTROL":
+		return errcode.ErrSmsBusinessLimitControl
+	case "isv.INVALID_JSON_PARAM":
+		return errcode.ErrSmsInvalidJsonParam
+	case "isv.BLACK_KEY_CONTROL_LIMIT":
 		return errcode.ErrSmsBlackKeyControlLimit
-	case "isv.param-not-support-url":
-		return errcode.ErrSmsParamNotSupportUrl
-	case "isv.param-length-limit":
+	case "isv.PARAM_LENGTH_LIMIT":
 		return errcode.ErrSmsParamLengthLimit
-	case "isv.amount-not-enough":
+	case "isv.PARAM_NOT_SUPPORT_URL":
+		return errcode.ErrSmsParamNotSupportUrl
+	case "isv.AMOUNT_NOT_ENOUGH":
 		return errcode.ErrSmsAmountNotEnough
-	case "isv.appkey-not-exists":
-		return errcode.ErrSmsInvalidAccesskeyid
 	case "SignatureDoesNotMatch":
 		return errcode.ErrSmsInvalidSignature
+	case "SignatureNonceUsed":
+		return errcode.ErrSmsSignatureNonceUsed
 	}
 
 	// 记录日志
