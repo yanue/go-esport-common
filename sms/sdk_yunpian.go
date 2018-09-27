@@ -12,7 +12,6 @@ package sms
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/yanue/go-esport-common"
 	"github.com/yanue/go-esport-common/errcode"
 	"io/ioutil"
@@ -20,8 +19,7 @@ import (
 	"net/url"
 )
 
-// todo 云片支持
-const yunpianApiUrl = ""
+const yunpianApiUrl = "https://sms.yunpian.com/v1/sms/tpl_send.json"
 
 /*
 	{
@@ -40,6 +38,14 @@ type resultErrorYunpian struct {
 		Count int `json:"count"`
 		Sid   int `json:"sid"`
 	} `json:"result"`
+}
+
+/*
+ *@note 增加云片短信支持
+ *@param apiKey 云片apikey
+ */
+func (this *smsSdk) AddYunpianApiKey(apiKey string) {
+	this.YunpianApiKey = apiKey
 }
 
 /*
@@ -92,7 +98,7 @@ func (this *smsSdk) parseYunpianErr(code int) (errCode int32) {
 	if code == 0 {
 		return errcode.No_Error
 	}
-	common.Logs.Warn(fmt.Sprintf("Error code: %d", code))
+	//common.Logs.Warn(fmt.Sprintf("Error code: %d", code))
 	switch code {
 	case 1, 2: // 请求参数缺失,请求参数格式错误
 		return errcode.ErrSmsInvalidParameters

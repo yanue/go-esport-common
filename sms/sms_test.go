@@ -20,9 +20,9 @@ import (
 var sms *SmsUtil
 
 func init() {
-	accessKeyId := "LTAIiCR1y6RAa2IC"
-	accessKeySecret := "pit2WJpgdhSwOEhzr42EdlXMuTdhpn"
-	signName := "智享协同"
+	accessKeyId := ""
+	accessKeySecret := ""
+	signName := ""
 
 	// 建立连接
 	client := redis.NewClient(&redis.Options{
@@ -72,4 +72,11 @@ func TestSmsUtil_SendCode(t *testing.T) {
 
 	// 刷新验证码发送限制
 	sms.renewSmsLimit(imei)
+}
+
+func TestSmsSdk_SendYunpianSms(t *testing.T) {
+	code := "124312"
+	phone := "+8618503002165"
+	sms.YunpianApiKey = ""
+	sms.SendYunpianSms(phone, YunpianSmsCommon_EN, map[string]interface{}{"code": code})
 }
