@@ -23,8 +23,8 @@ const letterBytes = "0123456789"
 
 type smsSdk struct {
 	// AliSmsSdk 阿里云短信
-	*AliSmsSdk
-	YunpianApiKey string
+	aliSdk        *AliSmsSdk
+	yunpianApiKey string
 }
 
 /**
@@ -35,10 +35,10 @@ type smsSdk struct {
  *@param lang 语言
  *@return 错误信息
  */
-func (this *smsSdk) SendCommonCode(phone, code string, area AreaCode, lang SmsLanguage) int32 {
+func (this *smsSdk) sendCommonCode(phone, code string, area AreaCode, lang SmsLanguage) int32 {
 	// 国内阿里短信
 	if area == AreaCode_CN {
-		return this.SendAliSms(phone, smsCommon_CN, map[string]interface{}{"code": code})
+		return this.sendAliSms(phone, smsCommon_CN, map[string]interface{}{"code": code})
 	}
 
 	// 国际云片短信发送
@@ -50,17 +50,17 @@ func (this *smsSdk) SendCommonCode(phone, code string, area AreaCode, lang SmsLa
 
 	areaStr := string(area)
 
-	return this.SendYunpianSms(areaStr+phone, tmp, map[string]interface{}{"code": code})
+	return this.sendYunpianSms(areaStr+phone, tmp, map[string]interface{}{"code": code})
 }
 
 /*
  *@note 通过阿里大于发送国内短信通知
  *@param phone 手机号
  *@param templateCode 短信模板
- *@param smsParam 短信模板变量参数
+ *@param smsParam 短信模板变量参数 map[string]interface{}{"code": code}
  *@return 错误信息
  */
-func (this *smsSdk) SendAliSms(phone, templateCode string, smsParam map[string]interface{}) (errCode int32) {
+func (this *smsSdk) sendAliSms(phone, templateCode string, smsParam map[string]interface{}) (errCode int32) {
 	// phoneNumbers,  templateCode, templateParam
 	templateParam := ""
 
@@ -70,7 +70,7 @@ func (this *smsSdk) SendAliSms(phone, templateCode string, smsParam map[string]i
 	}
 
 	// request
-	_, errCode = this.sendAliSms(phone, templateCode, templateParam)
+	_, errCode = this.aliSdk.sendAliSms(phone, templateCode, templateParam)
 
 	return
 }

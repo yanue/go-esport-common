@@ -48,7 +48,9 @@ func init() {
 			},
 
 			// Payload
-			Payload: &pb.PJwtPayload{},
+			Payload: &pb.PJwtPayload{
+				Device: &pb.PDevice{},
+			},
 		},
 	}
 }
@@ -58,17 +60,16 @@ func init() {
 *@param uid 用户ID
 *@param os 	0: "ANDROID", 1: "IOS",	2: "WEB",
 *@param loginType 0: "ACCOUNT", 1: "PHONE",2: "WECHAT",3: "QQ",
-*@param deviceId 设备唯一标识
+*@param imei 设备唯一标识
 *@return 生成的jwt
  */
-func (this *jwtToken) Generate(uid int, os pb.Os, loginType pb.ELoginType, deviceId string) (token, payloadStr string, err error) {
+func (this *jwtToken) Generate(uid int, loginType pb.ELoginType, device *pb.PDevice) (token, payloadStr string, err error) {
 	// payload
 	this.Payload = &pb.PJwtPayload{
 		Uid:       int32(uid),
 		Time:      time.Now().Unix(),
-		Os:        os,
 		LoginType: loginType,
-		DeviceId:  deviceId,
+		Device:    device,
 	}
 
 	// 转成符合 JWT 标准的字符串
@@ -180,7 +181,7 @@ func (this *jwtToken) Verify(tokenStr string) (token *jwtToken, payload string, 
 *@return *jwtToken
  */
 func (this *jwtToken) ParsePayload(payloadStr string) (result *pb.PJwtPayload, err error) {
-	result = this.Payload
+	result = &pb.PJwtPayload{}
 
 	payload, err := base64.RawURLEncoding.DecodeString(payloadStr)
 	if err != nil {

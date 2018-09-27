@@ -48,24 +48,24 @@ type aliSmsResponse struct {
 // 阿里云短信结构
 type AliSmsSdk struct {
 	//system parameters
-	AccessKeyId      string
-	AccessKeySecret  string
-	Timestamp        string
-	Format           string
-	SignatureMethod  string
-	SignatureVersion string
-	SignatureNonce   string
-	Signature        string
+	accessKeyId      string
+	accessKeySecret  string
+	timestamp        string
+	format           string
+	signatureMethod  string
+	signatureVersion string
+	signatureNonce   string
+	signature        string
 
 	//business parameters
-	Action        string
-	Version       string
-	RegionId      string
-	PhoneNumbers  string
-	SignName      string
-	TemplateCode  string
-	TemplateParam string
-	OutId         string
+	action        string
+	version       string
+	regionId      string
+	phoneNumbers  string
+	signName      string
+	templateCode  string
+	templateParam string
+	outId         string
 }
 
 // 发送验证码
@@ -74,9 +74,9 @@ func (this *AliSmsSdk) sendAliSms(phoneNumbers, templateCode, templateParam stri
 	this.init()
 
 	// 其他输入参数
-	this.PhoneNumbers = phoneNumbers
-	this.TemplateCode = templateCode
-	this.TemplateParam = templateParam
+	this.phoneNumbers = phoneNumbers
+	this.templateCode = templateCode
+	this.templateParam = templateParam
 
 	// 构建带签名url
 	signUrl, errno := this.buildSignUrl()
@@ -108,45 +108,45 @@ func (this *AliSmsSdk) sendAliSms(phoneNumbers, templateCode, templateParam stri
 
 // 构建url
 func (this *AliSmsSdk) buildSignUrl() (string, int32) {
-	if len(this.AccessKeyId) == 0 {
+	if len(this.accessKeyId) == 0 {
 		return "", errcode.ErrSmsInvalidAccesskeyid
 	}
 
-	if len(this.PhoneNumbers) == 0 {
+	if len(this.phoneNumbers) == 0 {
 		return "", errcode.ErrSmsInvalidAccesskeysecret
 	}
 
-	if len(this.SignName) == 0 {
+	if len(this.signName) == 0 {
 		return "", errcode.ErrSmsInvalidSignname
 	}
 
-	if len(this.TemplateCode) == 0 {
+	if len(this.templateCode) == 0 {
 		return "", errcode.ErrSmsInvalidTemplatecode
 	}
 
-	if len(this.TemplateParam) == 0 {
+	if len(this.templateParam) == 0 {
 		return "", errcode.ErrSmsInvalidTemplateparam
 	}
 
 	// common params
 	systemParams := make(map[string]string)
-	systemParams["SignatureMethod"] = this.SignatureMethod
-	systemParams["SignatureNonce"] = this.SignatureNonce
-	systemParams["AccessKeyId"] = this.AccessKeyId
-	systemParams["SignatureVersion"] = this.SignatureVersion
-	systemParams["Timestamp"] = this.Timestamp
-	systemParams["Format"] = this.Format
+	systemParams["SignatureMethod"] = this.signatureMethod
+	systemParams["SignatureNonce"] = this.signatureNonce
+	systemParams["AccessKeyId"] = this.accessKeyId
+	systemParams["SignatureVersion"] = this.signatureVersion
+	systemParams["Timestamp"] = this.timestamp
+	systemParams["Format"] = this.format
 
 	// business params
 	businessParams := make(map[string]string)
-	businessParams["Action"] = this.Action
-	businessParams["Version"] = this.Version
-	businessParams["RegionId"] = this.RegionId
-	businessParams["PhoneNumbers"] = this.PhoneNumbers
-	businessParams["SignName"] = this.SignName
-	businessParams["TemplateParam"] = this.TemplateParam
-	businessParams["TemplateCode"] = this.TemplateCode
-	businessParams["OutId"] = this.OutId
+	businessParams["Action"] = this.action
+	businessParams["Version"] = this.version
+	businessParams["RegionId"] = this.regionId
+	businessParams["PhoneNumbers"] = this.phoneNumbers
+	businessParams["SignName"] = this.signName
+	businessParams["TemplateParam"] = this.templateParam
+	businessParams["TemplateCode"] = this.templateCode
+	businessParams["OutId"] = this.outId
 
 	// generate signature and sorted query
 	sortedQueryString, signature := this.generateQueryStringAndSignature(businessParams, systemParams)
@@ -189,7 +189,7 @@ func (this *AliSmsSdk) generateQueryStringAndSignature(businessParams map[string
 	// 签名参数
 	stringToSign := "GET" + "&" + this.specialUrlEncode("/") + "&" + this.specialUrlEncode(sortedQueryString)
 	// 签名
-	signature := this.sign(this.AccessKeySecret+"&", stringToSign)
+	signature := this.sign(this.accessKeySecret+"&", stringToSign)
 	// 签名url处理
 	signature = this.specialUrlEncode(signature)
 
@@ -287,13 +287,13 @@ func (this *AliSmsSdk) parseErr(subCode string) (errCode int32) {
 // 初始化默认参数
 func (this *AliSmsSdk) init() {
 	local, _ := time.LoadLocation("GMT")
-	this.Timestamp = time.Now().In(local).Format("2006-01-02T15:04:05Z")
-	this.Format = "json"
-	this.SignatureMethod = "HMAC-SHA1"
-	this.SignatureVersion = "1.0"
-	this.SignatureNonce = this.newSignatureNonce()
-	this.Action = "SendSms"
-	this.Version = "2017-05-25"
-	this.RegionId = "cn-hangzhou"
-	this.OutId = "abcdefg"
+	this.timestamp = time.Now().In(local).Format("2006-01-02T15:04:05Z")
+	this.format = "json"
+	this.signatureMethod = "HMAC-SHA1"
+	this.signatureVersion = "1.0"
+	this.signatureNonce = this.newSignatureNonce()
+	this.action = "SendSms"
+	this.version = "2017-05-25"
+	this.regionId = "cn-hangzhou"
+	this.outId = "abcdefg"
 }

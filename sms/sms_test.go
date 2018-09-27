@@ -77,6 +77,6 @@ func TestSmsUtil_SendCode(t *testing.T) {
 func TestSmsSdk_SendYunpianSms(t *testing.T) {
 	code := "124312"
 	phone := "+8618503002165"
-	sms.YunpianApiKey = ""
-	sms.SendYunpianSms(phone, YunpianSmsCommon_EN, map[string]interface{}{"code": code})
+	sms.yunpianApiKey = ""
+	sms.sendYunpianSms(phone, YunpianSmsCommon_EN, map[string]interface{}{"code": code})
 }

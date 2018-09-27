@@ -12,6 +12,7 @@ package sms
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/yanue/go-esport-common"
 	"github.com/yanue/go-esport-common/errcode"
 	"io/ioutil"
@@ -45,7 +46,7 @@ type resultErrorYunpian struct {
  *@param apiKey 云片apikey
  */
 func (this *smsSdk) AddYunpianApiKey(apiKey string) {
-	this.YunpianApiKey = apiKey
+	this.yunpianApiKey = apiKey
 }
 
 /*
@@ -55,15 +56,15 @@ func (this *smsSdk) AddYunpianApiKey(apiKey string) {
  *@param smsParam 短信模板变量参数
  *@return 错误信息
  */
-func (this *smsSdk) SendYunpianSms(phone, templateCode string, smsParam map[string]interface{}) (errCode int32) {
+func (this *smsSdk) sendYunpianSms(phone, templateCode string, smsParam map[string]interface{}) (errCode int32) {
 	tplValue := url.Values{}
 	for k, v := range smsParam {
 		tplValue["#"+k+"#"] = []string{v.(string)}
 	}
 
-	dataTplSms := url.Values{"apikey": {this.YunpianApiKey}, "phone": {phone}, "tpl_id": {templateCode}, "tpl_value": {tplValue.Encode()}}
+	dataTplSms := url.Values{"apikey": {this.yunpianApiKey}, "phone": {phone}, "tpl_id": {templateCode}, "tpl_value": {tplValue.Encode()}}
 
-	common.Logs.Debug("dataTplSms = %v", dataTplSms)
+	//common.Logs.Debug("dataTplSms = %v", dataTplSms)
 
 	// 发送请求
 	_, errCode = this.doHttpsPostYunpian(yunpianApiUrl, dataTplSms)
@@ -98,7 +99,7 @@ func (this *smsSdk) parseYunpianErr(code int) (errCode int32) {
 	if code == 0 {
 		return errcode.No_Error
 	}
-	//common.Logs.Warn(fmt.Sprintf("Error code: %d", code))
+	common.Logs.Info(fmt.Sprintf("Error code: %d", code))
 	switch code {
 	case 1, 2: // 请求参数缺失,请求参数格式错误
 		return errcode.ErrSmsInvalidParameters

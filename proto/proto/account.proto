@@ -48,22 +48,38 @@ enum Os {
     WEB = 2; // 微信
 }
 
+// app客户端设备信息
+message PDevice {
+    // 设备IMEI,唯一识别码
+    string imei = 1;
+    // 操作系统类型:ios,android,web
+    Os os = 2;
+    // 操作系统版本
+    string osVersion = 3;
+    // 设备型号，如iPhone 6s
+    string model = 4;
+}
+
 // 登陆所需结构
 message PLoginData {
-    // 手机号
-    string phone = 1;
-    // 验证码
-    string verify_code = 2;
-    // 账号
-    string account = 3;
-    // 密码,已使用rsa加密
-    string password = 4;
     // 登陆方式
-    ELoginType login_type = 5;
-    // 登陆设备os
-    Os os = 6;
-    // 登陆设备唯一标识
-    string device_id = 7;
+    ELoginType login_type = 1;
+    // 设备信息
+    PDevice device = 2;
+    // 手机号
+    string phone = 3;
+    // 验证码
+    string verify_code = 4;
+    // 账号
+    string account = 5;
+    // 密码,已使用rsa加密
+    string password = 6;
+    // qq登陆openid
+    string qq_openid = 8;
+    // qq登陆access_token
+    string qq_access_token = 9;
+    // 微信登陆code
+    string wx_code = 10;
 }
 
 // 用户及jwt token信息
@@ -105,6 +121,29 @@ message PLoignBindInfoList {
     repeated PLoignBindInfo List = 1;
 }
 
+// 发送验证码所需内容
+message PSmsData {
+    // 手机号
+    string phone = 1;
+    // 设备号
+    string imei = 2;
+    // 验证码类型,与sms.CodeType对应
+    codeType code_type = 3;
+
+    // 验证码类型,与sms.CodeType对应
+    enum codeType {
+        // 快捷登陆
+        quick_login = 0;
+        // 重置密码
+        reset_pass = 2;
+        // 注册
+        reg = 1;
+        // 手机号绑定
+        bind = 3;
+    }
+}
+
+// 账号相关服务
 service Account {
     // 登陆(账号或手机号)
     rpc Login (PLoginData) returns (PUserAndToken) {
@@ -112,8 +151,8 @@ service Account {
     // 注册信息
     rpc Reg (PString) returns (PUserAndToken) {
     }
-    // 获取验证码
-    rpc GetVerifyCode (PString) returns (PBool) {
+    // 发送验证码(包含各种验证码,对应codeType)
+    rpc SendSmsVerifyCode (PSmsData) returns (PNoResponse) {
     }
     // 获取账号信息(需验证登陆情况)
     rpc GetAccountInfo (PNoParam) returns (PUser) {

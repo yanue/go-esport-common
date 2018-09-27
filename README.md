@@ -94,3 +94,24 @@
 
 ```
 
+
+#### 6. sms短信发送与验证
+- 目录: `sms`
+- 用法:
+```
+import "github.com/yanue/go-esport-common/sms"
+
+ ...
+ // 根据定义情况
+appKey = "11111111"
+appSecret = "22222222222222222222222222222222"
+signName = "大鱼测试"
+yunpianApiKey := "11111"
+
+smsUtil := NewSms(accessKeyId, accessKeySecret, signName, client)
+err1 := smsUtil.SendCode("13800000000", SmsCodeTypeBind, "112")
+fmt.Println("err", err1, errcode.GetErrMsg(err1))
+ ...
+
+```
+

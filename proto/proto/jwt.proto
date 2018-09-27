@@ -24,10 +24,8 @@ message PJwtPayload {
     int32 uid = 2;
     // token产生时间
     int64 time = 3;
-    // token对应的客户端类型；ios,android,web
-    Os os = 4;
-    // 设备唯一标识
-    string device_id = 5;
+    // 设备信息
+    PDevice device = 4;
 }
 
 // jwt token信息

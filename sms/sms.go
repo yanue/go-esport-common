@@ -119,12 +119,12 @@ type SmsUtil struct {
 func NewSms(accessKeyId, accessKeySecret, signName string, redisClient *redis.Client) *SmsUtil {
 	return &SmsUtil{
 		smsSdk: &smsSdk{
-			AliSmsSdk: &AliSmsSdk{
-				AccessKeyId:     accessKeyId,
-				AccessKeySecret: accessKeySecret,
-				SignName:        signName,
+			aliSdk: &AliSmsSdk{
+				accessKeyId:     accessKeyId,
+				accessKeySecret: accessKeySecret,
+				signName:        signName,
 			},
-			YunpianApiKey: "", // 云片短信的支持 todo
+			yunpianApiKey: "", // 云片短信的支持 todo
 		},
 		redis: redisClient,
 	}
@@ -162,7 +162,7 @@ func (this *SmsUtil) SendCode(phone string, codeType CodeType, imei string) int3
 	}
 
 	// 发送验证码
-	errCode := this.smsSdk.SendCommonCode(phone, code, AreaCode_CN, SmsLanguage_CN)
+	errCode := this.smsSdk.sendCommonCode(phone, code, AreaCode_CN, SmsLanguage_CN)
 	if errCode == errcode.No_Error && imei != "" {
 		// 刷新验证码发送限制
 		this.renewSmsLimit(imei)
@@ -190,10 +190,15 @@ func (this *SmsUtil) VerifyCode(phone, code string, codeType CodeType, isDelete 
 	}
 
 	// 前缀+phone
-	verCode, _ := this.redis.Get(vKey + phone).Result()
+	pKey := vKey + phone
+
+	// 获取数据
+	verCode, _ := this.redis.Get(pKey).Result()
+
 	if code == verCode {
+		// 输入正确才删除
 		if isDelete {
-			this.redis.Del(vKey)
+			this.redis.Del(pKey)
 		}
 		return true
 	}
