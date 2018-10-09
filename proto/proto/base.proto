@@ -150,6 +150,14 @@ message PKeyValList {
     repeated PKeyVal List = 1;
 }
 
+// 手机号带验证码
+message PPhoneCode {
+    // 手机号
+    string phone = 1;
+    // 验证码
+    string verify_code = 2;
+}
+
 /*
  *@note 带类型的二进制数据包，通过解析MsgType后再把MsgData反序列化为proto
  */

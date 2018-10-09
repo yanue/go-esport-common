@@ -12,8 +12,9 @@ package errcode
 
 var errMsgSms = map[ErrNo]string{
 	// Sms
+	ErrSmsVerifyCodeCheck:           "短信验证码校验失败",
 	ErrSmsOutOfService:              "业务停机",
-	ErrsmsPermissionDeny:              "权限不足",
+	ErrsmsPermissionDeny:            "权限不足",
 	ErrSmsProductUnsubscribe:        "产品服务未开通",
 	ErrSmsAccountNotExists:          "账户信息不存在",
 	ErrSmsInvalidAccesskeyid:        "无效的AccessKeyId",
@@ -45,7 +46,8 @@ var errMsgSms = map[ErrNo]string{
 
 const (
 	// Sms
-	ErrSmsOutOfService              = errOffsetSms + iota //业务停机",
+	ErrSmsVerifyCodeCheck           = errOffsetSms + iota // 短信验证码校验失败
+	ErrSmsOutOfService                                    //业务停机",
 	ErrsmsPermissionDeny                                  //产品服务未开通",
 	ErrSmsProductUnsubscribe                              //产品服务未开通",
 	ErrSmsAccountNotExists                                //账户信息不存在",

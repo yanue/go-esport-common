@@ -103,8 +103,29 @@ message PRegData {
     string password = 4;
 }
 
+// 绑定账号所需结构
+message PBindData {
+    // 需要Authorization信息
+    // 登陆方式
+    ELoginType bind_type = 2;
+    // 手机号
+    string phone = 3;
+    // 验证码
+    string verify_code = 4;
+    // 账号
+    string account = 5;
+    // 密码,已使用rsa加密
+    string password = 6;
+    // qq登陆openid
+    string qq_openid = 8;
+    // qq登陆access_token
+    string qq_access_token = 9;
+    // 微信登陆code
+    string wx_code = 10;
+}
+
 // 用户已绑定的登录方式信息
-message PLoignBindInfo {
+message PLoginBindInfo {
     // 用户名，没有则为空
     string Account = 1;
     // 手机号码，没有则为空
@@ -112,13 +133,13 @@ message PLoignBindInfo {
     // 是否已绑定微信，绑定为true，未绑定为false
     bool Wechat = 3;
     // 是否已绑定QQ，绑定为true，未绑定为false
-    bool QQ = 7;
+    bool QQ = 4;
     // 是否已绑定微博，绑定为true，未绑定为false
-    bool WeiBo = 4;
+    bool WeiBo = 5;
 }
 
-message PLoignBindInfoList {
-    repeated PLoignBindInfo List = 1;
+message PLoginBindInfoList {
+    repeated PLoginBindInfo List = 1;
 }
 
 // 发送验证码所需内容
@@ -145,14 +166,48 @@ message PSmsData {
 
 // 账号相关服务
 service Account {
-    // 登陆(账号或手机号)
-    rpc Login (PLoginData) returns (PUserAndToken) {
-    }
-    // 注册信息
-    rpc Reg (PString) returns (PUserAndToken) {
-    }
     // 发送验证码(包含各种验证码,对应codeType)
     rpc SendSmsVerifyCode (PSmsData) returns (PNoResponse) {
+    }
+    // 登陆(账号,手机号,qq,微信)
+    rpc Login (PLoginData) returns (PUserAndToken) {
+    }
+    // 注册信息(账号密码)
+    rpc Reg (PRegData) returns (PUserAndToken) {
+    }
+    // 绑定账号(账号,手机号,qq,微信)
+    // -- 已经通过某种方式登陆
+    rpc Bind (PBindData) returns (PNoResponse) {
+    }
+    // 账号解绑(仅支持解绑第三方qq,微信),对应ELoginType
+    rpc Unbind (PString) returns (PNoResponse) {
+    }
+    // 设置账号名
+    rpc SetAccountName (PString) returns (PNoResponse) {
+    }
+    // 修改密码(通过原始密码)
+    rpc ChangePassword (PString) returns (PNoResponse) {
+    }
+    // 修改昵称
+    rpc ChangeNickname (PString) returns (PNoResponse) {
+    }
+    // 修改手机号
+    rpc ChangePhone (PString) returns (PNoResponse) {
+    }
+    // 设置密码(手机验证码登陆情况)
+    rpc SetPassword (PKeyValList) returns (PNoResponse) {
+    }
+    // 重置密码(通过原始密码重置密码)
+    rpc ResetPassword (PKeyValList) returns (PNoResponse) {
+    }
+    // 头像设置
+    rpc SetAvatar (PString) returns (PNoResponse) {
+    }
+    // 修改资料
+    rpc SaveProfile (PKeyValList) returns (PNoResponse) {
+    }
+    // 提交身份认证信息
+    rpc SubmitIdentity (PKeyValList) returns (PNoResponse) {
     }
     // 获取账号信息(需验证登陆情况)
     rpc GetAccountInfo (PNoParam) returns (PUser) {

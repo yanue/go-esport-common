@@ -141,7 +141,7 @@ func NewSms(accessKeyId, accessKeySecret, signName string, redisClient *redis.Cl
  */
 func (this *SmsUtil) SendCode(phone string, codeType CodeType, imei string) int32 {
 	// 检查手机号
-	if errno := validator.Verify.IsPhoneWithoutCode(phone); errno > 0 {
+	if errno := validator.Verify.IsPhone(phone); errno > 0 {
 		return errno
 	}
 

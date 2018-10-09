@@ -53,7 +53,7 @@ var regexpWithoutAreaCode = map[string]*regexp.Regexp{
  *@param areaCode 国家码
  *@return 错误码
  */
-func (this *cRegexpPhoneCode) IsPhone(phone string, areaCode string) int32 {
+func (this *cRegexpPhoneCode) IsPhoneWithCode(phone string, areaCode string) int32 {
 
 	for k, v := range this.regexpWithAreaCode {
 		// 匹配国家编码
@@ -70,11 +70,10 @@ func (this *cRegexpPhoneCode) IsPhone(phone string, areaCode string) int32 {
 }
 
 /*
- *@note 分割区号和手机号
- *@param phoneWithCode 带区号的手机号码
- *@return 分割区号,手机号
+ *@note 验证是否手机号 - 不含国家码
+ *@return 错误码
  */
-func (this *cRegexpPhoneCode) IsPhoneWithoutCode(phone string) int32 {
+func (this *cRegexpPhoneCode) IsPhone(phone string) int32 {
 	for _, v := range this.regexpWithoutAreaCode {
 		if v.MatchString(phone) {
 			return errcode.No_Error

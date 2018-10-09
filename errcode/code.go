@@ -11,8 +11,8 @@
 package errcode
 
 import (
-	"errors"
 	"fmt"
+	"github.com/micro/go-micro/errors"
 	"os"
 )
 
@@ -81,10 +81,11 @@ func GetErrMsg(code int32, extraMsg ... string) string {
 *@note 根据错误码获取错误
 *@param code 错误码
 *@param extraMsg 额外自定义信息
-*@return
+*@return go-miro errors
 */
 func GetError(code int32, extraMsg ... string) error {
-	return errors.New(GetErrMsg(code, extraMsg...))
+	// 使用go-miro errors
+	return errors.New("", GetErrMsg(code, extraMsg...), code)
 }
 
 /*
