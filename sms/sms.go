@@ -48,7 +48,7 @@ const (
 
 const (
 	// 阿里大于短信模板
-	smsCommon_CN = "SMS_129748714"
+	smsCommon_CN = "SMS_149405013"
 )
 
 const (
