@@ -1,9 +1,9 @@
-#!/bin/bash env
+#!/bin/bash
 # description: install monit and auto config for blemobi micro service
 # auth: yanue
 # time: 2018-10-30
 # usage:
-# > wget https://raw.githubusercontent.com/yanue/go-esport-common/master/bin/monit.sh
+# > wget http://ssl.miwukeji.net/monit.sh
 # > chmod +x monit.sh
 # > ./monit.sh
 
