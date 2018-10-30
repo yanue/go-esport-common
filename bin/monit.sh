@@ -12,9 +12,6 @@ export PATH=/usr/local/bin:/sbin:/usr/bin:/bin
 disableYumPlugin(){
     echo -e "\033[32m1. set yum plugin disable \033[0m"
     sed -i -e 's/plugins.*/plugins=0/' /etc/yum.conf
-    echo $0
-
-    sed -i 's/.*\(alias vi\).*/\1/' /etc/bashrc
 }
 
 installBase(){
@@ -25,20 +22,17 @@ installBase(){
 setBashrc(){
     echo -e "\033[32m3. set bashrc \033[0m"
     # alias vi="vim"
-    if !(grep -R "alias\s*vi" /etc/bashrc)
-    then
+    if ! (grep -R "alias vi=" /etc/bashrc); then
         echo 'alias vi="vim"' >> /etc/bashrc
     fi
 
     # alias nets="netstat -ntpl"
-    if !(grep -R "alias\s*nets" /etc/bashrc)
-    then
+    if ! (grep -R "alias\s*nets=" /etc/bashrc); then
         echo 'alias nets="netstat -ntpl"' >> /etc/bashrc
     fi
 
     # alias j="cd /opt/miwu/service/"
-    if !(grep -R "alias\s*j" /etc/bashrc)
-    then
+    if ! (grep -R "alias\s*j=" /etc/bashrc); then
         echo 'alias j="cd /opt/miwu/service/"' >> /etc/bashrc
     fi
 
@@ -97,9 +91,11 @@ monitConfMicro(){
     arr=($(netstat -ntpl | grep 'blemobi' | awk '{print $4"|"$7}'))
 
     declare -A nameWithPort=()
+    declare -A nameWithPid=()
 
     for txt in "${arr[@]}"
     do
+        pid=$(echo $txt | awk '{split($0,a,"|" ); print a[2]}' | awk '{split($0,b,"/" ); print b[1]}')
         name=$(echo $txt | awk '{split($0,a,"|" ); print a[2]}' | awk '{split($0,b,"/" ); print b[2]}')
         port=$(echo $txt | awk '{split($0,a,"|" ); print a[1]}' | awk '{n=split($1,A,":"); print A[n]}')
 
@@ -110,8 +106,7 @@ monitConfMicro(){
 
         # replace min port on same name
         needReplace=0
-        if [[ ${nameWithPort[$name]} != "" ]];
-        then
+        if [[ ${nameWithPort[$name]} != "" ]]; then
             # if exist port ge now port
             if test ${nameWithPort["$name"]} -ge $port; then
                 needReplace=1
@@ -123,6 +118,7 @@ monitConfMicro(){
 
         if [ "$needReplace" = "1" ]; then
             nameWithPort["$name"]=$port
+            nameWithPid["$name"]=$pid
         fi
     done
 
@@ -134,9 +130,30 @@ monitConfMicro(){
         runPort=${nameWithPort[$runName]}
 
         # check systemd file
-        if [ -f "/etc/systemd/system/$serviceName.service" ]
-        then
-            # monit data
+        if ! [ -f "/etc/systemd/system/$serviceName.service" ]; then
+            echo -e "\033[31m> no found runName:$runName, service:$serviceName, try found by ps cmd \033[0m"
+
+            # PID/Program name only has 19 chars
+            if [[ ${nameWithPid[$runName]} != "" ]]; then
+                pid=${nameWithPid[$runName]}
+
+                # re get run name by ps
+                newRunName=$(ps -p $pid | grep $runName | awk '{print $4}')
+                echo -e "\033[31m> ps found runName:$newRunName\033[0m"
+
+                serviceName=$(echo $newRunName | sed -e "s/-//")
+                monitName=$(echo $newRunName | sed -e "s/-//"| sed -e "s/blemobi//")
+
+                # check systemd file again
+                if ! [ -f "/etc/systemd/system/$serviceName.service" ]; then
+                    echo -e "\033[31m no found runName:$runName, service:$serviceName, you can add it manual \033[0m"
+                    echo -e "\033[34m> demo: /etc/monit.d/consul.conf\033[0m"
+                    continue
+                fi
+            fi
+        fi
+
+         # monit data
             text=$(cat <<-END
 check process $monitName
     matching "$runName"
@@ -150,14 +167,13 @@ END
             echo -e "\033[33m$text\033[0m"
             echo -e "\033[34m> /etc/monit.d/$monitName.conf\033[0m"
             echo "$text" > "/etc/monit.d/$monitName.conf"
-        fi
+
     done
 }
 
 monitReload(){
     echo -e "\033[32m8. start monit \033[0m"
     /bin/systemctl restart monit
-    /usr/bin/monit reload
     /usr/bin/monit status
 }
 
